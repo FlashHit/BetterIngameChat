@@ -4,7 +4,13 @@ function OutgoingMessages:__init()
 	self.m_SendChatMessage = Events:Subscribe('WebUI:OutgoingChatMessage', self, self.OnWebUIOutgoingChatMessage)
 end
 
-function OutgoingMessages:OnWebUIOutgoingChatMessage(p_Target, p_Message, p_TargetName)
+function OutgoingMessages:OnWebUIOutgoingChatMessage(p_JsonData)
+	local s_DecodedData = json.decode(p_JsonData)
+
+	-- Load params from the decoded JSON.
+	local p_Target = s_DecodedData.target
+	local p_Message = s_DecodedData.message
+	local p_TargetName = s_DecodedData.targetName
 
 	-- Trim the message.
 	local s_From = p_Message:match"^%s*()"

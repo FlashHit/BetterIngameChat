@@ -6,7 +6,7 @@ class 'BetterIngameChat'
 
 function BetterIngameChat:__init()
 	-- Subscribe to events.
-	self.m_ExtensionLoadedEvent = Events:Subscribe('Extension:Loaded', self, self.OnLoaded)
+	self.m_ExtensionLoadedEvent = Events:Subscribe('Extension:Loaded', self, self.OnExtensionLoaded)
 	self.m_OutgoingChatMessageEvent = Events:Subscribe('WebUI:OutgoingChatMessage', self, self.OnWebUIOutgoingChatMessage)
 
 	-- Initialize the other components.

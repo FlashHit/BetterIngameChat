@@ -1,7 +1,5 @@
 class 'IncomingMessages'
 
-local m_StoreManager = require "StoreManager"
-
 function IncomingMessages:__init()
 	self.m_CreateChatMessage = Hooks:Install('UI:CreateChatMessage',999, self, self.OnUICreateChatMessage)
 end
@@ -27,7 +25,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 
 		s_Table = {author = "Admin", content = s_String, target = "admin"}
 		--print('OnMessage, '.. json.encode(s_Table))
-		m_StoreManager:Dispatch("OnMessage", s_Table)
+		WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 
 		goto continue
 	end
@@ -76,7 +74,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 
 	s_Table = {author = s_OtherPlayer.name, content = p_Message, target = s_Target}
 	--print('OnMessage, '.. json.encode(s_Table))
-	m_StoreManager:Dispatch("OnMessage", s_Table)
+	WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 
 	::continue::
 
