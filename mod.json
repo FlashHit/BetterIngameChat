@@ -1,0 +1,9 @@
+{
+	"Name": "BetterIngameChat",
+	"Authors": [ "KVN", "Flash_Hit" ],
+	"Description": "A fancy BF3 Chat with more functions.",
+	"URL": "none",
+	"Version": "0.0.1",
+	"HasWebUI": true,
+	"HasVeniceEXT": true
+}
