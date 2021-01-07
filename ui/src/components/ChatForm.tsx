@@ -35,6 +35,7 @@ const Title: React.FC<Props> = ({ target, isTypingActive, doneTypeing }) => {
     }
 
     const onBlur = () => {
+        resetInputMessage();
         resetKeyboardAndMouse();
     }
 

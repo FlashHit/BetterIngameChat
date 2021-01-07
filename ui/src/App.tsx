@@ -10,6 +10,7 @@ import ChatState from "./helpers/ChatState";
 
 import 'line-awesome/dist/line-awesome/css/line-awesome.min.css';
 import './App.scss';
+import ChatStatePopup from "./components/ChatStatePopup";
 
 const App: React.FC = () => {
     /*
@@ -30,9 +31,10 @@ const App: React.FC = () => {
 
     const setRandomMessages = () => {
         addMessage({
-            message: "🥝 " + loremIpsum({ p: 1, avgSentencesPerParagraph: 2, startWithLoremIpsum: false }).toString(),
+            message: loremIpsum({ p: 1, avgSentencesPerParagraph: 2, startWithLoremIpsum: false }).toString(),
             senderName: username(),
-            messageTarget: MessageTarget.CctSayAll,
+            messageTarget: MessageTarget.CctTeam,
+            squadMate: false,
         });
     }
 
@@ -47,6 +49,11 @@ const App: React.FC = () => {
         var classes = "chatItem";
 
         classes += " chatType" + MessageTargetString[message.messageTarget];
+
+        if (message.squadMate) {
+            classes += " chatSquadmate";
+        }
+        
 
         return classes;
     }
@@ -70,49 +77,61 @@ const App: React.FC = () => {
     
     var interval: any = null;
     useEffect(() => {
-        if (chatState === ChatState.Popup) {
-            if (interval !== null) {
-                clearInterval(interval);
-            }
-    
-            if (messages.length > 0) {
+        if (!isTypingActive) {
+            if (chatState === ChatState.Popup) {
+                if (interval !== null) {
+                    clearTimeout(interval);
+                }
+        
                 setShowChat(true);
                 
-                interval = setInterval(() => {
+                interval = setTimeout(() => {
                     setShowChat(false);
                 }, 5000);
+
+                return () => {
+                    clearTimeout(interval);
+                }
+            } else if(chatState === ChatState.Always) {
+                setShowChat(true);
+            } else {
+                setShowChat(false);
             }
-    
-            return () => {
-                clearInterval(interval);
-            }
-        } else if(chatState === ChatState.Always) {
-            setShowChat(true);
         } else {
-            setShowChat(false);
+            clearTimeout(interval);
         }
-    }, [messages]);
+    }, [messages, chatState, isTypingActive]);
 
     /* Window */
     window.OnFocus = (p_Target: MessageTarget) => {
-        clearInterval(interval);
-        setShowChat(true);
+        if (navigator.userAgent.includes('VeniceUnleashed')) {
+            WebUI.Call('BringToFront');
+            WebUI.Call('EnableKeyboard');
+            WebUI.Call('EnableMouse');
+        }
 
+        setShowChat(true);
         setChatTarget(p_Target);
         setIsTypingActive(true);
-
-        WebUI.Call('BringToFront');
-        WebUI.Call('EnableKeyboard');
-        WebUI.Call('EnableMouse');
     }
 
     window.OnMessage = (p_DataJson: any) => {
-        console.log(p_DataJson);
         addMessage({
             message: p_DataJson.content.toString(),
             senderName: p_DataJson.author.toString(),
             messageTarget: p_DataJson.target,
+            squadMate: p_DataJson.isSquadMate,
         });
+    }
+
+    window.OnChangeType = () => {
+        if (chatState === ChatState.Popup) {
+            setChatState(ChatState.Always);
+        } else if(chatState === ChatState.Always) {
+            setChatState(ChatState.Hidden);
+        } else if(chatState === ChatState.Hidden) {
+            setChatState(ChatState.Popup);
+        }
     }
 
     return (
@@ -133,9 +152,10 @@ const App: React.FC = () => {
             <div id="debug">
                 <button onClick={() => setRandomMessages()}>Random messages</button>
                 <button onClick={() =>  window.OnFocus(MessageTarget.CctAdmin)}>isTypingActive</button>
+                <button onClick={() =>  window.OnChangeType()}>OnChangeType</button>
             </div>
 
-            <div id="VuChat" className={(showChat ? "showChat" : "hideChat") + (isTypingActive ? " isTypingActive": "")}>
+            <div id="VuChat" className={(showChat ? "showChat" : "hideChat") + ((isTypingActive || chatState === ChatState.Always) ? " isTypingActive": "")}>
                 <div className="chatWindow" ref={messageEl}>
                     <div className="chatWindowInner">
                         {messages.map((message: Message, index: number) => (
@@ -149,6 +169,7 @@ const App: React.FC = () => {
                 </div>
                 <ChatForm target={chatTarget} isTypingActive={isTypingActive} doneTypeing={() => setIsTypingActive(false)} />
             </div>
+            <ChatStatePopup chatState={chatState} />
         </>
     );
 };
@@ -159,5 +180,6 @@ declare global {
     interface Window {
         OnFocus: (p_Target: MessageTarget) => void;
         OnMessage: (p_DataJson: any) => void;
+        OnChangeType: () => void;
     }
 }

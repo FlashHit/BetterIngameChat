@@ -67,9 +67,9 @@
     --team: #219EBC;
     --all: #FFFFFF;
     --enemy: #FB8500;
-    --squad: #04724D;
-    --admin: #D664BE;
-    --leader: #7D80DA;
+    --squad: #9dfb00;
+    --admin: #ff00fe;
+    --leader: #ff0000;
 }
 
 ::-webkit-scrollbar {
@@ -174,13 +174,15 @@ h6 {
         .chatMessageTarget {
             margin: 0 0.2vw 0 0;
             text-transform: uppercase;
+            font-weight: 600;
         }
 
         .chatSender {
             margin: 0 0.2vw 0 0;
+            font-weight: 600;
         }
         
-        &.chatEnemy {
+        &.chatTypeEnemy {
             border-color: var(--enemy);
 
             &::before {
@@ -195,12 +197,13 @@ h6 {
             }
 
             .chatSender,
-            .chatMessageType {
+            .chatMessageTarget {
                 color: var(--enemy);
             }
         }
 
-        &.chatTeam {
+        &.chatTypeAll,
+        &.chatTypeTeam {
             border-color: var(--team);
             
             &::before {
@@ -215,16 +218,93 @@ h6 {
             }
 
             .chatSender,
-            .chatMessageType {
+            .chatMessageTarget {
                 color: var(--team);
             }
         }
 
-        &.chatSquad {
+        &.chatTypeSquad {
+            border-color: var(--squad);
+
+            &::before {
+                content: '';
+                position: absolute;
+                //background: linear-gradient(90deg, rgba(33,158,188,0.2) 50%, rgba(0,0,0,0) 90%);
+                background: linear-gradient(90deg, rgba(157,251,0,0.2) 0%, rgba(0,0,0,0) 100%);
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                z-index: -1;
+            }
+
             .chatSender,
-            .chatMessageType {
+            .chatMessageTarget {
+                color: var(--squad);
+            }
+        }
+
+        &.chatTypeAdmin {
+            border-color: var(--admin);
+
+            &::before {
+                content: '';
+                position: absolute;
+                background: linear-gradient(90deg, rgba(255,0,254,0.2) 0%, rgba(0,0,0,0) 100%);
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                z-index: -1;
+            }
+
+            .chatSender,
+            .chatMessageTarget {
+                color: var(--admin);
+            }
+        }
+
+        &.chatTypeLeader {
+            border-color: var(--leader);
+
+            &::before {
+                content: '';
+                position: absolute;
+                background: linear-gradient(90deg, rgba(255,0,0,0.2) 0%, rgba(0,0,0,0) 100%);
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                z-index: -1;
+            }
+
+            .chatSender,
+            .chatMessageTarget {
+                color: var(--leader);
+            }
+        }
+
+        &.chatTeammate {
+            .chatSender {
+                color: var(--team);
+            }
+        }
+
+        &.chatSquadmate {
+            .chatSender {
                 color: var(--squad);
             }
         }
     }
+}
+
+#VuChatStatePopup {
+    color: #fff;
+    position: absolute;
+    left: 3vw;
+    top: 37vh;
+    width: 25.2vw;
+    height: 3vh;
+    font-size: 1vw;
+    text-transform: uppercase;
 }

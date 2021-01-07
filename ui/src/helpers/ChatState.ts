@@ -4,4 +4,10 @@ export enum ChatState {
     Hidden,
 }
 
+export var ChatStateString = {
+    [ChatState.Popup]: 'Popup',
+    [ChatState.Always]: 'Always',
+    [ChatState.Hidden]: 'Hidden',
+}
+
 export default ChatState;
