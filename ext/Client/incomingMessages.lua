@@ -38,7 +38,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 		goto continue
 	end
 	
-	if s_OtherPlayer.squadId == s_LocalPlayer.squadId then
+	if s_OtherPlayer.teamId == s_LocalPlayer.teamId and s_OtherPlayer.squadId == s_LocalPlayer.squadId then
 		s_IsSquadMate = true
 	end
 	
