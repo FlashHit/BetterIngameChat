@@ -16,7 +16,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 	local s_LocalPlayer = PlayerManager:GetLocalPlayer()
 	local s_Target
 	local s_Table = {}
-	local s_IsSquadMate = false
+	local s_PlayerRelation = "none"
 	local s_TargetName = nil
 
 
@@ -38,8 +38,10 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 		goto continue
 	end
 	
-	if s_OtherPlayer.teamId == s_LocalPlayer.teamId and s_OtherPlayer.squadId == s_LocalPlayer.squadId then
-		s_IsSquadMate = true
+	if s_OtherPlayer.name == s_LocalPlayer.name then
+		s_PlayerRelation = "localPlayer"
+	elseif s_OtherPlayer.name ~= s_LocalPlayer.name and s_OtherPlayer.teamId == s_LocalPlayer.teamId and s_OtherPlayer.squadId == s_LocalPlayer.squadId then
+		s_PlayerRelation = "squadMate"
 	end
 	
 	-- Player is a spectator.
@@ -79,7 +81,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 		goto continue
 	end
 
-	s_Table = {author = s_OtherPlayer.name, content = p_Message, target = s_Target, isSquadMate = s_IsSquadMate, targetName = s_TargetName}
+	s_Table = {author = s_OtherPlayer.name, content = p_Message, target = s_Target, playerRelation = s_PlayerRelation, targetName = s_TargetName}
 	--print('OnMessage, '.. json.encode(s_Table))
 	WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 
