@@ -17,6 +17,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 	local s_Target
 	local s_Table = {}
 	local s_IsSquadMate = false
+	local s_TargetName = nil
 
 
 	if p_Channel == ChatChannelType.CctAdmin then
@@ -50,7 +51,8 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 	-- so s_Target = "voteban flash" and p_Message = "Hello Mate!"
 	elseif p_Message:gsub(":.*$", ""):match("DirectMessage") then
 		p_Message = p_Message:match("^[a-z]+:(.*)$")
-		s_Target = p_Message:gsub(":.*$", ""):gsub("DirectMessage ", "")
+		s_Target = "player"
+		s_TargetName = p_Message:gsub(":.*$", ""):gsub("DirectMessage ", "")
 	
 	-- Player is on a different team; display enemy message.
 	elseif (s_LocalPlayer.teamId == 0 and s_OtherPlayer.teamId == 2) or (s_LocalPlayer.teamId ~= 0 and s_OtherPlayer.teamId ~= s_LocalPlayer.teamId) then
@@ -77,7 +79,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 		goto continue
 	end
 
-	s_Table = {author = s_OtherPlayer.name, content = p_Message, target = s_Target, isSquadMate = s_IsSquadMate}
+	s_Table = {author = s_OtherPlayer.name, content = p_Message, target = s_Target, isSquadMate = s_IsSquadMate, targetName = s_TargetName}
 	--print('OnMessage, '.. json.encode(s_Table))
 	WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 
