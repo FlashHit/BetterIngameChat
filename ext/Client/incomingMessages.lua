@@ -23,6 +23,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 	if p_Channel == ChatChannelType.CctAdmin then
 		
 		local s_Author = "Admin"
+		s_Target = "admin"
 		
 		if p_Message:gsub(":.*$", ""):match("DirectPlayerMessage") then
 			
@@ -66,7 +67,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 
 		s_PlayerRelation = self:GetPlayerRelation(s_OtherPlayer, s_LocalPlayer)	
 
-		s_Table = {author = s_Author, content = s_String, target = "admin", playerRelation = s_PlayerRelation, targetName = s_TargetName}
+		s_Table = {author = s_Author, content = s_String, target = s_Target, playerRelation = s_PlayerRelation, targetName = s_TargetName}
 		
 		WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 
