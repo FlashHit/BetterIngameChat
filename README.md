@@ -8,6 +8,7 @@
   - Squad = green
   - SquadLeader = blue (too) -- maybe a darker blue idk
   - (DirectMessage) Player = Pink? or darker red
+  
 maybe there should be background color and [All] color etc. separated?
 
 - Player color represents the relation:
