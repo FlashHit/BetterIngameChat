@@ -47,12 +47,12 @@ function BetterIngameChat:OnMessageToSquadLeaders(p_Player, p_Content)
 end
 
 function BetterIngameChat:OnMessageToPlayer(p_Player, p_Content)
-	local s_TargetPlayerMessage = "DirectPlayerMessage" .. p_Player.name .. ":" .. p_Content[1]
+	local s_TargetPlayerMessage = "DirectPlayerMessage " .. p_Player.name .. ":" .. p_Content[1]
 	local s_TargetPlayer = PlayerManager:GetPlayerByName(p_Content[2])
 	
 	if s_TargetPlayer ~= nil then
 		ChatManager:SendMessage(s_TargetPlayerMessage, s_TargetPlayer)
-		local s_SenderReturnMessage = "DirectReturnMessage" .. s_TargetPlayer.name .. ":" .. p_Content[1]
+		local s_SenderReturnMessage = "DirectReturnMessage " .. s_TargetPlayer.name .. ":" .. p_Content[1]
 		ChatManager:SendMessage(s_SenderReturnMessage, p_Player)
 	else
 		ChatManager:SendMessage("ERROR: Player not found.", p_Player)
