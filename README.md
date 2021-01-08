@@ -3,12 +3,14 @@
 - Background color represents the channel:
   - Admin = Purple? -- maybe just the normal channel? like if its a admin message for all then black, if its for a player then pink(?) -- but [ADMIN] always purple? -- the question is how I see if the admin message was sent to me or to all?
   -- OR we make it always purple but the [ADMIN] color tells us if its a direct or all message
+  -- Edit: I will just make [From ADMIN] for player
   - All = (red/)orange (enemy) or black (teammate/squadmate) -- orange is cool but maybe black would be enough, dunno.
   - Team = blue
   - Squad = green
   - SquadLeader = blue (too) -- maybe a darker blue idk
-  - (DirectMessage) Player = Pink? or darker red
-  
+  - (DirectMessage) Player = Pink? or darker red [From]
+  - (DirectMessage) LocalPlayer = [To <playername>]
+ -- forgot to send a message back to the localplayer same with sqleader
 maybe there should be background color and [All] color etc. separated? then I would remove s_Target and add s_Channel for background and s_Tag for [ALL] etc.
 
 - Player color represents the relation:
