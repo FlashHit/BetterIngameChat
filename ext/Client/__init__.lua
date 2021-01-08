@@ -1,6 +1,7 @@
 local EnableTyping = require 'enableTyping'
 local IncomingMessages = require 'incomingMessages'
 local OutgoingMessages = require 'outgoingMessages'
+local CollectedPlayers = require 'collectedNames'
 
 class 'BetterIngameChat'
 
@@ -12,6 +13,8 @@ function BetterIngameChat:__init()
 	self.m_EnableTyping = EnableTyping()
 	self.m_IncomingMessages = IncomingMessages()
 	self.m_OutgoingMessages = OutgoingMessages()
+	self.m_CollectedPlayers = CollectedPlayers()
+	
 end
 
 function BetterIngameChat:OnExtensionLoaded()

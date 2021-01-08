@@ -56,6 +56,21 @@ function OutgoingMessages:OnWebUIOutgoingChatMessage(p_JsonData)
 		NetEvents:Send('Message:ToPlayer', {p_Message, p_TargetName})
 		return
 	end
+	
+	if p_Target == 'admin'then
+		NetEvents:Send('AdminMessage:ToAll', {p_Message, false})
+		return
+	end
+	
+	if p_Target == 'adminAnonym' then
+		NetEvents:Send('AdminMessage:ToAll', {p_Message, true})
+		return
+	end
+	
+	if p_Target == 'adminPlayer' and p_TargetName ~= nil then
+		NetEvents:Send('AdminMessage:ToPlayer', {p_Message, p_TargetName})
+		return
+	end
 
 	return
 end
