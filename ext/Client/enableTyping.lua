@@ -53,12 +53,10 @@ function EnableTyping:OnInputConceptEvent(p_Hook, p_EventType, p_Action)
 	end
 
 	-- TODO: Fixme
-	--[[if p_Action == UIInputAction.UIInputAction_ToggleChat and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed then
-		m_StoreManager:Dispatch("ToggleDisplayMode")
-		p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
-		return
-	end]]
-
+	if p_Action == UIInputAction.UIInputAction_ToggleChat and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed then
+		WebUI:ExecuteJS("OnChangeType()")
+	end
+	
 	-- Otherwise, let the game handle it as it normally does.
 end
 
