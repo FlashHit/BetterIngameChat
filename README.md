@@ -9,7 +9,7 @@
   - Squad = green
   - SquadLeader = blue (too) -- maybe a darker blue idk
   - (DirectMessage) Player = Pink? or darker red [From]
-  - (DirectMessage) LocalPlayer = [To <playername>]
+  - (DirectMessage) LocalPlayer = `[To <playername>]`
  -- forgot to send a message back to the localplayer same with sqleader
 maybe there should be background color and [All] color etc. separated? then I would remove s_Target and add s_Channel for background and s_Tag for [ALL] etc.
 
