@@ -11,6 +11,7 @@
   - (DirectMessage) Player = Pink? or darker red [From]
   - (DirectMessage) LocalPlayer = `[To <playername>]`
  -- forgot to send a message back to the localplayer same with sqleader
+
 maybe there should be background color and [All] color etc. separated? then I would remove s_Target and add s_Channel for background and s_Tag for [ALL] etc.
 
 - Player color represents the relation:
