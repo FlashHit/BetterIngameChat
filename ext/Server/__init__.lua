@@ -20,11 +20,6 @@ function BetterIngameChat:__init()
 	self.m_GameAdminPlayerEvent = Events:Subscribe('GameAdmin:Player', self, self.OnGameAdminPlayer)
 	self.m_GameAdminClearEvent = Events:Subscribe('GameAdmin:Clear', self, self.OnGameAdminClear)
 
-	-- Initialize the other components.
-	self.m_EnableTyping = EnableTyping()
-	self.m_IncomingMessages = IncomingMessages()
-	self.m_OutgoingMessages = OutgoingMessages()
-	
 end
 
 function BetterIngameChat:OnServerRoundOver(p_RoundTime, p_WinningTeam)
@@ -94,7 +89,7 @@ function BetterIngameChat:OnAdminMessageToAll(p_Player, p_Content)
 		ChatManager:SendMessage(s_Message)
 	end
 	-- TODO: send message to the sender
-end)
+end
 
 -- Region gameAdmin
 function BetterIngameChat:OnGameAdminPlayer(p_PlayerName, p_Abilitities)
