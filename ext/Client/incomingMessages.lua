@@ -8,7 +8,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 	if p_Message == nil then
 		return
 	end
-
+	print(p_Message)
 	-- Get the player sending the message, and our local player.
 	local s_OtherPlayer = PlayerManager:GetPlayerById(p_PlayerId)
 	local s_LocalPlayer = PlayerManager:GetLocalPlayer()
@@ -24,10 +24,14 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 		
 		local s_Author = "Admin"
 		s_Target = "admin"
+	
+		-- This is a workaround because many RCON tools prepend
+		-- "Admin: " to admin messages.
+		local s_String = p_Message:gsub("^Admin: ", '')
 		
 		if p_Message:gsub(":.*$", ""):match("DirectPlayerMessage") then
 			
-			p_Message = p_Message:match("^[a-z]+:(.*)$")
+			s_String = p_Message:match("^[a-z]+:(.*)$")
 			
 			s_Target = "player"
 			
@@ -42,7 +46,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 			
 		elseif p_Message:gsub(":.*$", ""):match("DirectReturnMessage") then
 		
-			p_Message = p_Message:match("^[a-z]+:(.*)$")
+			s_String = p_Message:match("^[a-z]+:(.*)$")
 			
 			s_Target = "player"
 			
@@ -59,10 +63,6 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 			
 			-- or what if we just do: "[@playerName] message"?
 		end
-	
-		-- This is a workaround because many RCON tools prepend
-		-- "Admin: " to admin messages.
-		local s_String = p_Message:gsub("^Admin: ", '')
 
 
 		s_PlayerRelation = self:GetPlayerRelation(s_OtherPlayer, s_LocalPlayer)	
