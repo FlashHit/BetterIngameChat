@@ -20,17 +20,20 @@ function EnableTyping:OnInputConceptEvent(p_Hook, p_EventType, p_Action)
 	if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftShift) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and (p_Action == UIInputAction.UIInputAction_SayAllChat or p_Action == UIInputAction.UIInputAction_TeamChat or p_Action == UIInputAction.UIInputAction_SquadChat) then
 		WebUI:ExecuteJS(string.format("OnFocus('%s')", ChatConfig.shiftCombination))
 		p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
+		return
 	end
 	
 	if self.m_IsAdmin == true then
 		if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftCtrl) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and (p_Action == UIInputAction.UIInputAction_SquadChat) then
 			WebUI:ExecuteJS(string.format("OnFocus('%s')", ChatConfig.ctrlSquadCombination))
 			p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
+			return
 		end
 		
 		if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftCtrl) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and (p_Action == UIInputAction.UIInputAction_SayAllChat or p_Action == UIInputAction.UIInputAction_TeamChat) then
 			WebUI:ExecuteJS(string.format("OnFocus('%s')", ChatConfig.ctrlCombination))
 			p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
+			return
 		end
 	end
 
@@ -52,9 +55,10 @@ function EnableTyping:OnInputConceptEvent(p_Hook, p_EventType, p_Action)
 		return
 	end
 
-	-- TODO: Fixme
 	if p_Action == UIInputAction.UIInputAction_ToggleChat and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed then
 		WebUI:ExecuteJS("OnChangeType()")
+		p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
+		return
 	end
 	
 	-- Otherwise, let the game handle it as it normally does.

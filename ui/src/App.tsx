@@ -5,7 +5,6 @@ import ChatForm from "./components/ChatForm";
 
 import Message from "./helpers/Message";
 import { MessageTarget, MessageTargetString } from "./helpers/MessageTarget";
-import Player from "./helpers/Player";
 import ChatState from "./helpers/ChatState";
 
 import 'line-awesome/dist/line-awesome/css/line-awesome.min.css';
@@ -13,6 +12,8 @@ import './App.scss';
 import ChatStatePopup from "./components/ChatStatePopup";
 
 const App: React.FC = () => {
+    var Highlight = require('react-highlighter');
+
     /*
     * Debug
     */
@@ -31,10 +32,10 @@ const App: React.FC = () => {
 
     const setRandomMessages = () => {
         addMessage({
-            message: loremIpsum({ p: 1, avgSentencesPerParagraph: 2, startWithLoremIpsum: false }).toString(),
+            message: "@" + loremIpsum({ p: 1, avgSentencesPerParagraph: 2, startWithLoremIpsum: false }).toString(),
             senderName: username(),
-            messageTarget: MessageTarget.CctTeam,
-            squadMate: false,
+            messageTarget: MessageTarget.CctSquad,
+            playerRelation: "localPlayer",
         });
     }
 
@@ -50,10 +51,17 @@ const App: React.FC = () => {
 
         classes += " chatType" + MessageTargetString[message.messageTarget];
 
-        if (message.squadMate) {
-            classes += " chatSquadmate";
+        switch (message.playerRelation) {
+            case "localPlayer":
+                classes += " chatLocalPlayer";
+                break;
+            case "squadMate":
+                classes += " chatSquadmate";
+                break;
+            case "spectator":
+                classes += " chatSpectator";
+                break;
         }
-        
 
         return classes;
     }
@@ -110,6 +118,9 @@ const App: React.FC = () => {
             WebUI.Call('EnableMouse');
         }
 
+        console.log('OnFocus');
+        console.log(p_Target);
+
         setShowChat(true);
         setChatTarget(p_Target);
         setIsTypingActive(true);
@@ -120,7 +131,7 @@ const App: React.FC = () => {
             message: p_DataJson.content.toString(),
             senderName: p_DataJson.author.toString(),
             messageTarget: p_DataJson.target,
-            squadMate: p_DataJson.isSquadMate,
+            playerRelation: p_DataJson.playerRelation,
         });
     }
 
@@ -131,6 +142,26 @@ const App: React.FC = () => {
             setChatState(ChatState.Hidden);
         } else if(chatState === ChatState.Hidden) {
             setChatState(ChatState.Popup);
+        }
+    }
+
+    const [playerName, setPlayerName] = useState<string|null>(null);
+    window.OnUpdatePlayerName = (p_Name: string) => {
+        setPlayerName("@" + p_Name);
+    }
+
+    const [playerList, setPlayerList] = useState<string[]>(["KVN", "Bree", "Really long fucking name for my UI"]);
+    window.OnUpdatePlayerList = (m_CollectedPlayers: any) => {
+        setPlayerList([]);
+
+        var collectedPlayers = Object.values(m_CollectedPlayers);
+        if (collectedPlayers.length > 0) {
+            collectedPlayers.map((name: any, index: number) => {
+                setPlayerList(prevState => [
+                    ...prevState,
+                    name
+                ]);
+            });
         }
     }
 
@@ -151,7 +182,7 @@ const App: React.FC = () => {
             }
             <div id="debug">
                 <button onClick={() => setRandomMessages()}>Random messages</button>
-                <button onClick={() =>  window.OnFocus(MessageTarget.CctAdmin)}>isTypingActive</button>
+                <button onClick={() =>  window.OnFocus(MessageTarget.CctPlayer)}>isTypingActive</button>
                 <button onClick={() =>  window.OnChangeType()}>OnChangeType</button>
             </div>
 
@@ -160,14 +191,25 @@ const App: React.FC = () => {
                     <div className="chatWindowInner">
                         {messages.map((message: Message, index: number) => (
                             <div className={getChatItemClasses(message)} key={index}>
-                                <span className="chatMessageTarget">[{MessageTargetString[message.messageTarget]}]</span>
-                                <span className="chatSender">{message.senderName}:</span>
-                                <span className="chatMessage">{message.message}</span>
+                                <span className="chatMessageTarget">
+                                    [{MessageTargetString[message.messageTarget] === "Enemy" ? "All" : MessageTargetString[message.messageTarget]}]
+                                </span>
+                                <span className="chatSender">
+                                    {message.senderName}:
+                                </span>
+                                <span className="chatMessage">
+                                    {playerName !== null 
+                                    ?
+                                        <Highlight search={playerName}>{message.message}</Highlight>
+                                    :
+                                        message.message
+                                    }
+                                </span>
                             </div>
                         ))}
                     </div>
                 </div>
-                <ChatForm target={chatTarget} isTypingActive={isTypingActive} doneTypeing={() => setIsTypingActive(false)} />
+                <ChatForm target={chatTarget} isTypingActive={isTypingActive} doneTypeing={() => setIsTypingActive(false)} playerList={playerList} />
             </div>
             <ChatStatePopup chatState={chatState} />
         </>
@@ -181,5 +223,7 @@ declare global {
         OnFocus: (p_Target: MessageTarget) => void;
         OnMessage: (p_DataJson: any) => void;
         OnChangeType: () => void;
+        OnUpdatePlayerList: (m_CollectedPlayers: any) => void;
+        OnUpdatePlayerName: (p_Name: string) => void;
     }
 }

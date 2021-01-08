@@ -12,9 +12,12 @@ function CollectedPlayers:OnPlayerConnected(p_Player)
 		for _,l_Player in pairs(PlayerManager:GetPlayers()) do
 			self.m_CollectedPlayers[l_Player.id] = l_Player.name
 		end
+
+		WebUI:ExecuteJS(string.format("OnUpdatePlayerName('%s')", tostring(p_Player.name)))
 	else
 		self.m_CollectedPlayers[p_Player.id] = p_Player.name
 	end
+	
 	WebUI:ExecuteJS(string.format("OnUpdatePlayerList(%s)", json.encode(self.m_CollectedPlayers)))
 end
 

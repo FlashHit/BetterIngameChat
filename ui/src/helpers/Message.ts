@@ -4,7 +4,7 @@ interface Message {
     message: string;
     senderName: string;
     messageTarget: MessageTarget;
-    squadMate: boolean,
+    playerRelation: string,
 }
 
 export default Message;
