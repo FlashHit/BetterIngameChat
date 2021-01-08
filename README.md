@@ -16,6 +16,7 @@
   - Admin(Player) = purple or normal color? -- format is: `[ADMIN] playername: message` -- so I think it could be also just the normal player relation color 
   (playername needs to be implemented as well then, but should be easy. will be just on the server like `Netevents.... player, (message) message = player.name .. ": " .. message`
   - Directmessage? = pink as well? or darker red -- because what if an enemy sends a direct message? then its orange on pink or on darker red 
+  - Spectator = black? brown? yellow?
   
   
 - Direct Messages (Shift + Chatkey)
