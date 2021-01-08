@@ -9,7 +9,7 @@
   - SquadLeader = blue (too) -- maybe a darker blue idk
   - (DirectMessage) Player = Pink? or darker red
   
-maybe there should be background color and [All] color etc. separated?
+maybe there should be background color and [All] color etc. separated? then I would remove s_Target and add s_Channel for background and s_Tag for [ALL] etc.
 
 - Player color represents the relation:
   - LocalPlayer = white
