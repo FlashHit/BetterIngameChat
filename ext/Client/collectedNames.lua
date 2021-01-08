@@ -10,7 +10,9 @@ end
 function CollectedPlayers:OnPlayerConnected(p_Player)
 	if p_Player.name == PlayerManager:GetLocalPlayer().name then
 		for _,l_Player in pairs(PlayerManager:GetPlayers()) do
-			self.m_CollectedPlayers[l_Player.id] = l_Player.name
+			if p_Player.name ~= l_Player.name then
+				self.m_CollectedPlayers[l_Player.id] = l_Player.name
+			end
 		end
 
 		WebUI:ExecuteJS(string.format("OnUpdatePlayerName('%s')", tostring(p_Player.name)))
