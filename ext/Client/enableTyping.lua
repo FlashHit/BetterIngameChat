@@ -71,7 +71,6 @@ function EnableTyping:OnInputConceptEvent(p_Hook, p_EventType, p_Action)
 end
 
 function EnableTyping:OnAddAdminPlayer()
-	print("added as admin")
 	self.m_IsAdmin = true
 end
 
