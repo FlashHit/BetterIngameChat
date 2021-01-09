@@ -19,6 +19,7 @@ function BetterIngameChat:__init()
 	-- gameAdmin Events
 	self.m_GameAdminPlayerEvent = Events:Subscribe('GameAdmin:Player', self, self.OnGameAdminPlayer)
 	self.m_GameAdminClearEvent = Events:Subscribe('GameAdmin:Clear', self, self.OnGameAdminClear)
+	self.m_PlayerAuthenticatedEvent = Events:Subscribe('Player:Authenticated', self, self.OnPlayerAuthenticated)
 
 end
 
@@ -122,7 +123,8 @@ end
 
 -- Region gameAdmin
 function BetterIngameChat:OnGameAdminPlayer(p_PlayerName, p_Abilitities)
-    self.m_AdminList[playerName] = p_Abilitities
+
+    self.m_AdminList[p_PlayerName] = p_Abilitities
 	
 	-- send to the player
 	local s_Player = PlayerManager:GetPlayerByName(p_PlayerName)
@@ -141,6 +143,13 @@ function BetterIngameChat:OnGameAdminClear()
 	end
 	
 	self.m_AdminList = {}
+end
+
+function BetterIngameChat:OnPlayerAuthenticated(p_Player)
+	-- send NetEvent if admin
+	if self.m_AdminList[p_PlayerName] ~= nil then
+		NetEvents:SendTo('AddAdminPlayer', p_Player)
+	end
 end
 -- Endregion
 
