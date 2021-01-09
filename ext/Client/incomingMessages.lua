@@ -7,6 +7,10 @@ function IncomingMessages:__init()
 	self.m_MessageToPlayerEvent = NetEvents:Subscribe('ToClient:MessageToPlayer', self, self.OnMessageToPlayer)
 	self.m_AdminMessageToPlayerEvent = NetEvents:Subscribe('ToClient:AdminMessageToPlayer', self, self.OnAdminMessageToPlayer)
 	self.m_AdminMessageEvent = NetEvents:Subscribe('ToClient:AdminMessage', self, self.OnAdminMessage)
+	
+	self.m_EndScreenMessageEvent = NetEvents:Subscribe('EndScreenMessage', self, self.OnEndScreenMessage)
+	
+	
 end
 
 function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_PlayerId, p_RecipientMask, p_SenderIsDead)
@@ -64,7 +68,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 	-- Display global message.
 	elseif p_Channel == ChatChannelType.CctSayAll then
 		s_Target = "all"
-
+		
 	-- Display team message.
 	elseif p_Channel == ChatChannelType.CctTeam then
 		s_Target = "team"
@@ -173,6 +177,40 @@ function IncomingMessages:OnAdminMessage(p_Content)
 		s_PlayerRelation = self:GetPlayerRelation(s_OtherPlayer, s_LocalPlayer)	
 	end
 	
+	
+	s_Table = {author = s_Author, content = s_Message, target = s_Target, playerRelation = s_PlayerRelation, targetName = s_TargetName}
+		
+	WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
+	
+end
+
+function IncomingMessages:OnEndScreenMessage(p_Content)
+	
+	local s_Author = p_Content[1]
+	local s_Target = p_Content[2]
+	local s_Message = p_Content[3]
+	
+	local s_OtherPlayer = PlayerManager:GetPlayerByName(s_Author)
+	local s_LocalPlayer = PlayerManager:GetLocalPlayer()
+	local s_Table = {}
+	local s_PlayerRelation = "none"
+	local s_TargetName = nil
+	
+	if s_OtherPlayer == nil or s_LocalPlayer == nil then
+		return
+	end
+	
+	if s_Target ~= "all" then
+		if s_OtherPlayer.teamId ~= s_LocalPlayer.teamId then
+			return
+		end
+		
+		if s_Target == "squad" and s_OtherPlayer.squadId ~= s_LocalPlayer.squadId then
+			return
+		end
+	end
+	
+	s_PlayerRelation = self:GetPlayerRelation(s_OtherPlayer, s_LocalPlayer)	
 	
 	s_Table = {author = s_Author, content = s_Message, target = s_Target, playerRelation = s_PlayerRelation, targetName = s_TargetName}
 		
