@@ -1,6 +1,11 @@
 class 'IncomingMessages'
 
+--local MutedPlayerList = require 'mutedPlayerList'
+
 function IncomingMessages:__init()
+
+	--self.m_MutedPlayerList = MutedPlayerList()
+	
 	self.m_CreateChatMessage = Hooks:Install('UI:CreateChatMessage',999, self, self.OnUICreateChatMessage)
 	
 	self.m_MessageToSquadLeadersEvent = NetEvents:Subscribe('ToClient:MessageToSquadLeaders', self, self.OnMessageToSquadLeaders)
@@ -10,14 +15,35 @@ function IncomingMessages:__init()
 	
 	self.m_EndScreenMessageEvent = NetEvents:Subscribe('EndScreenMessage', self, self.OnEndScreenMessage)
 	
+	-- Region Mute
 	
+	self.m_TextChatModerationList = {}
+	--self.m_TextChatModerationMode = "free"
+	
+	self.m_MutedPlayers = {}
+	
+	-- AdvancedRCON Textchatmoderation NetEvents
+	self.m_GetTextChatModerationListEvent = NetEvents:Subscribe('Server:GetTextChatModerationList', self, self.OnGetTextChatModerationList)
+	self.m_AddPlayerEvent = NetEvents:Subscribe('Server:AddPlayer', self, self.OnAddPlayer)
+	self.m_OverWritePlayerEvent = NetEvents:Subscribe('Server:OverWritePlayer', self, self.OnOverWritePlayer)
+	self.m_RemovePlayerEvent = NetEvents:Subscribe('Server:RemovePlayer', self, self.OnRemovePlayer)
+	self.m_ClearListEvent = NetEvents:Subscribe('Server:ClearList', self, self.OnClearList)
+	self.m_LoadListEvent = NetEvents:Subscribe('Server:LoadList', self, self.OnLoadList)
+	--self.m_TextChatModerationModeEvent = NetEvents:Subscribe('Server:TextChatModerationMode', self, self.OnTextChatModerationMode)
+	
+	-- BetterIngameAdmin Mute
+	self.m_WebUIMutePlayerEvent = Events:Subscribe('WebUI:MutePlayer', self, self.OnWebUIMutePlayer)
+	self.m_WebUIUnmutePlayerEvent = Events:Subscribe('WebUI:UnmutePlayer', self, self.OnWebUIUnmutePlayer)
+	--self.m_WebUIChatChannelsEvent = Events:Subscribe('WebUI:ChatChannels', self, self.OnWebUIChatChannels)
+	
+	-- Endregion
 end
 
 function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_PlayerId, p_RecipientMask, p_SenderIsDead)
 	if p_Message == nil then
 		return
 	end
-	print(p_Message)
+
 	-- Get the player sending the message, and our local player.
 	local s_OtherPlayer = PlayerManager:GetPlayerById(p_PlayerId)
 	local s_LocalPlayer = PlayerManager:GetLocalPlayer()
@@ -86,7 +112,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 	WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 
 	::continue::
-	print(s_Table)
+
 	-- A new chat message is being created; 
 	-- prevent the game from rendering it.
 	p_Hook:Return()
@@ -101,6 +127,15 @@ function IncomingMessages:OnMessageToSquadLeader(p_Content)
 	local s_Table = {}
 	local s_PlayerRelation = "team"
 	local s_TargetName = nil
+	
+	
+	if self:CheckMuted(s_Author) then
+		return
+	end
+	
+	if self:CheckGlobalMuted(s_Author) then
+		return
+	end
 	
 	s_Table = {author = s_Author, content = s_Message, target = s_Target, playerRelation = s_PlayerRelation, targetName = s_TargetName}
 		
@@ -124,10 +159,18 @@ function IncomingMessages:OnMessageToPlayer(p_Content)
 		return
 	end
 	
+	if self:CheckMuted(s_OtherPlayer.name) then
+		return
+	end
+	
+	if self:CheckGlobalMuted(s_OtherPlayer.name) then
+		return
+	end
+	
 	s_PlayerRelation = self:GetPlayerRelation(s_OtherPlayer, s_LocalPlayer)	
 	
 	s_Table = {author = s_Author, content = s_Message, target = s_Target, playerRelation = s_PlayerRelation, targetName = s_TargetName}
-		
+	
 	WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 	
 end
@@ -245,6 +288,93 @@ function IncomingMessages:GetPlayerRelation(p_OtherPlayer, p_LocalPlayer)
 		return "enemy"
 	
 	end
+	
+end
+
+
+function IncomingMessages:OnGetTextChatModerationList(p_TextChatModerationList)
+	self.m_TextChatModerationList = p_TextChatModerationList
+end
+
+function IncomingMessages:OnAddPlayer(p_Content)
+	table.insert(self.m_TextChatModerationList, p_Content[1])
+end
+
+function IncomingMessages:OnOverWritePlayer(p_Content)
+	self.m_TextChatModerationList[p_Content[1]] = p_Content[2]
+end
+
+function IncomingMessages:OnRemovePlayer(p_Content)
+	table.remove(self.m_TextChatModerationList, p_Content[1])
+end
+
+function IncomingMessages:OnClearList(p_Content)
+	self.m_TextChatModerationList = {}
+end
+
+function IncomingMessages:OnLoadList(p_TextChatModerationList)
+	self.m_TextChatModerationList = p_TextChatModerationList
+end
+
+function IncomingMessages:OnTextChatModerationMode(p_Content)
+	self.m_TextChatModerationMode = p_Content[1]
+end
+
+function IncomingMessages:CheckGlobalMuted(p_PlayerName)
+
+	local s_IsVoice = false
+	local s_IsAdmin = false
+	
+	for _,l_Player in pairs(self.m_TextChatModerationList) do
+		if l_Player == "muted:"..p_PlayerName then
+			return true
+		elseif l_Player == "admin:"..p_PlayerName then
+			s_IsAdmin = true
+			return false
+		elseif l_Player == "voice:"..p_PlayerName then
+			s_IsVoice = true
+			return false
+		end
+	end
+	
+end
+
+function IncomingMessages:OnWebUIMutePlayer(p_PlayerName)
+
+	local s_PlayerAlreadyMuted = false
+	
+	for _,l_MutedPlayer in pairs(self.m_MutedPlayers) do
+		if l_MutedPlayer == p_PlayerName then	
+			s_PlayerAlreadyMuted = true
+			return
+		end
+	end
+	if s_PlayerAlreadyMuted == false then
+		table.insert(self.m_MutedPlayers, p_PlayerName)
+	end
+end
+
+function IncomingMessages:OnWebUIUnmutePlayer(p_PlayerName)
+
+	local s_PlayerAlreadyMuted = false
+	
+	for i,l_MutedPlayer in pairs(self.m_MutedPlayers) do
+		if l_MutedPlayer == p_PlayerName then
+			table.remove(self.m_MutedPlayers, i)
+			return
+		end
+	end
+end
+
+function IncomingMessages:CheckMuted(p_PlayerName)
+
+	for _,l_Player in pairs(self.m_MutedPlayers) do
+		if l_Player == p_PlayerName then
+			return true
+		end
+	end
+	
+	return false
 	
 end
 
