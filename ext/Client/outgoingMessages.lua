@@ -65,17 +65,11 @@ function OutgoingMessages:OnWebUIOutgoingChatMessage(p_JsonData)
 	
 	if p_Target == 'admin'then
 		NetEvents:Send('AdminMessage:ToAll', {p_Message, false})
-		
-		s_Table = {author = s_LocalPlayer.name, content = p_Message, target = "admin", playerRelation = "localPlayer", targetName = nil}	
-		WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 		return
 	end
 	
 	if p_Target == 'adminAnonym' then
 		NetEvents:Send('AdminMessage:ToAll', {p_Message, true})
-		
-		s_Table = {author = "", content = p_Message, target = "admin", playerRelation = "localPlayer", targetName = nil}	
-		WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 		return
 	end
 	
