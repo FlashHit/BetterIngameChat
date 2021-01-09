@@ -1,10 +1,14 @@
 class 'IncomingMessages'
 
+--local MutedPlayerList = require 'mutedPlayerList'
+
 function IncomingMessages:__init()
+
+	--self.m_MutedPlayerList = MutedPlayerList()
 	
 	self.m_CreateChatMessage = Hooks:Install('UI:CreateChatMessage',999, self, self.OnUICreateChatMessage)
 	
-	self.m_MessageToSquadLeadersEvent = NetEvents:Subscribe('ToClient:MessageToSquadLeaders', self, self.OnMessageToSquadLeaders)
+	self.m_MessageToSquadLeadersEvent = NetEvents:Subscribe('ToClient:MessageToSquadLeaders', self, self.OnMessageToSquadLeader)
 	self.m_MessageToPlayerEvent = NetEvents:Subscribe('ToClient:MessageToPlayer', self, self.OnMessageToPlayer)
 	self.m_AdminMessageToPlayerEvent = NetEvents:Subscribe('ToClient:AdminMessageToPlayer', self, self.OnAdminMessageToPlayer)
 	self.m_AdminMessageEvent = NetEvents:Subscribe('ToClient:AdminMessage', self, self.OnAdminMessage)
@@ -115,7 +119,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 end
 
 function IncomingMessages:OnMessageToSquadLeader(p_Content)
-	
+
 	local s_Author = p_Content[1]
 	local s_Message = p_Content[2]
 	
@@ -123,7 +127,6 @@ function IncomingMessages:OnMessageToSquadLeader(p_Content)
 	local s_Table = {}
 	local s_PlayerRelation = "team"
 	local s_TargetName = nil
-	
 	
 	if self:CheckMuted(s_Author) then
 		return

@@ -58,7 +58,7 @@ end
 
 function BetterIngameChat:OnMessageToSquadLeaders(p_Player, p_Content)
 	if p_Player.isSquadLeader == false then
-		RCON:SendCommand("admin.say", {"ERROR: You are no squad leader.", p_Player.name})
+		RCON:SendCommand("admin.say", {"ERROR: You are no squad leader.", "player", p_Player.name})
 		return
 	end
 	
@@ -67,7 +67,7 @@ function BetterIngameChat:OnMessageToSquadLeaders(p_Player, p_Content)
 	for i,l_Player in pairs(PlayerManager:GetPlayersByTeam(p_Player.teamId)) do
 		if l_Player.isSquadLeader == true then
 			NetEvents:SendTo('ToClient:MessageToSquadLeaders', l_Player, {p_Player.name, s_Message})
-			RCON:TriggerEvent("player.onChat",{p_Player.name, "SquadLeaderMessage: " .. s_Message, l_Player.name})
+			RCON:TriggerEvent("player.onChat",{p_Player.name, "SquadLeaderMessage: " .. s_Message, "player", l_Player.name})
 		end
 	end
 end
@@ -80,7 +80,7 @@ function BetterIngameChat:OnMessageToPlayer(p_Player, p_Content)
 	if s_TargetPlayer ~= nil then
 		NetEvents:SendTo('ToClient:MessageToPlayer', s_TargetPlayer, {p_Player.name, s_Message})
 		-- commented out for privacy
-		-- RCON:TriggerEvent("player.onChat",{p_Player.name, s_Message, s_TargetPlayer.name})
+		-- RCON:TriggerEvent("player.onChat",{p_Player.name, s_Message, "player", s_TargetPlayer.name})
 	else
 		RCON:SendCommand("admin.say", {"ERROR: Player not found.", p_Player.name})
 	end
@@ -88,7 +88,7 @@ end
 
 function BetterIngameChat:OnAdminMessageToPlayer(p_Player, p_Content)
 	if m_AdminList[p_Player.name] == nil then
-		RCON:SendCommand("admin.say", {"ERROR: You are no admin.", p_Player.name})
+		RCON:SendCommand("admin.say", {"ERROR: You are no admin.", "player", p_Player.name})
 		return
 	end
 	
@@ -97,14 +97,14 @@ function BetterIngameChat:OnAdminMessageToPlayer(p_Player, p_Content)
 	
 	if s_TargetPlayer ~= nil then
 		NetEvents:SendTo('ToClient:AdminMessageToPlayer', s_TargetPlayer, {p_Player.name, s_Message})
-		RCON:TriggerEvent("player.onChat",{p_Player.name, s_Message, s_TargetPlayer.name})
+		RCON:TriggerEvent("player.onChat",{p_Player.name, s_Message, "player", s_TargetPlayer.name})
 		-- player.onChat senderName "test message" targetName
 	end
 end
 
 function BetterIngameChat:OnAdminMessageToAll(p_Player, p_Content)
 	if m_AdminList[p_Player.name] == nil then
-		RCON:SendCommand("admin.say", {"ERROR: You are no admin.", p_Player.name})
+		RCON:SendCommand("admin.say", {"ERROR: You are no admin.", "player", p_Player.name})
 		return
 	end
 	
