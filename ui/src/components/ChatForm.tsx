@@ -134,6 +134,7 @@ const Title: React.FC<Props> = ({ target, isTypingActive, doneTypeing, playerLis
                             onKeyDown={onKeyDown} 
                             onBlur={onBlur} 
                             onChange={onChange}
+                            spellCheck={false}
                             ref={inputEl}
                         />
                     }

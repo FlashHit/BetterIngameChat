@@ -6,6 +6,7 @@ export enum MessageTarget {
     CctAdmin = 'admin',
     CctPlayer = 'player',
     CctEnemy = 'enemy',
+    CctSpectator = 'spectator',
 }
 
 export var MessageTargetString = {
@@ -16,6 +17,7 @@ export var MessageTargetString = {
     [MessageTarget.CctAdmin]: 'Admin',
     [MessageTarget.CctPlayer]: 'Player',
     [MessageTarget.CctEnemy]: 'Enemy',
+    [MessageTarget.CctSpectator]: 'Spectator',
 }
 
 export default MessageTarget;
