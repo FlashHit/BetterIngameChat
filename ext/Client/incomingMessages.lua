@@ -22,20 +22,23 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 
 	if p_Channel == ChatChannelType.CctAdmin then
 		
-		local s_Author = "Admin"
+		local s_Author = ""
 		s_Target = "admin"
 	
 		-- This is a workaround because many RCON tools prepend
 		-- "Admin: " to admin messages.
 		local s_String = p_Message:gsub("^Admin: ", '')
 		
-		if p_Message:gsub(":.*$", ""):match("DirectPlayerMessage") then
+		if p_Message:match("^DirectPlayerMessage") then
 			
-			s_String = p_Message:match("^[a-z]+:(.*)$")
+			s_String = p_Message:match(" DirectPlayerMessage(.*)$")
+			-- :gsub("^  ", ""):match("  (.*)$")
 			
 			s_Target = "player"
 			
-			s_Author = p_Message:gsub(":.*$", ""):gsub("DirectPlayerMessage ", "")
+			s_Author = p_Message:gsub("DirectPlayerMessage ", ""):gsub(" DirectPlayerMessage.*$", "")
+			-- :gsub("^  ", ""):gsub("  .*$", "")
+			
 			s_OtherPlayer = PlayerManager:GetPlayerByName(s_Author)
 			
 			if s_OtherPlayer == nil then
@@ -44,13 +47,15 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 			
 			-- Result: "[From] playername: message"
 			
-		elseif p_Message:gsub(":.*$", ""):match("DirectReturnMessage") then
+		elseif p_Message:match("^DirectReturnMessage") then
 		
-			s_String = p_Message:match("^[a-z]+:(.*)$")
+			s_String = p_Message:match(" DirectReturnMessage(.*)$")
+			-- :gsub("^  ", ""):match("  (.*)$")
 			
 			s_Target = "player"
 			
-			s_TargetName = p_Message:gsub(":.*$", ""):gsub("DirectReturnMessage ", "")
+			s_TargetName = p_Message:gsub("DirectReturnMessage ", ""):gsub(" DirectReturnMessage.*$", "")
+			-- :gsub("^  ", ""):gsub("  .*$", "")
 			
 			if s_LocalPlayer ~= nil then
 				s_Author = s_LocalPlayer.name
@@ -63,10 +68,11 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 			
 			-- or what if we just do: "[@playerName] message"?
 		end
-
-
-		s_PlayerRelation = self:GetPlayerRelation(s_OtherPlayer, s_LocalPlayer)	
-
+		
+		if s_Author ~= "" then
+			s_PlayerRelation = self:GetPlayerRelation(s_OtherPlayer, s_LocalPlayer)	
+		end
+		
 		s_Table = {author = s_Author, content = s_String, target = s_Target, playerRelation = s_PlayerRelation, targetName = s_TargetName}
 		
 		WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
@@ -95,7 +101,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 
 	-- Player is in the same team.
 	-- Display global message.
-	elseif p_Channel == ChatChannelType.CctSayAll and s_LocalPlayer.teamId ~= 0 then
+	elseif p_Channel == ChatChannelType.CctSayAll then
 		s_Target = "all"
 
 	-- Player sends a squad leader message
@@ -105,7 +111,7 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 		s_Target = "squadLeader"]]
 		
 	-- Display team message.
-	elseif p_Channel == ChatChannelType.CctTeam or s_LocalPlayer.teamId == 0 then
+	elseif p_Channel == ChatChannelType.CctTeam then
 		s_Target = "team"
 
 	-- Display squad message.
@@ -114,12 +120,14 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 	else
 		goto continue
 	end
-
+	
+	s_PlayerRelation = self:GetPlayerRelation(s_OtherPlayer, s_LocalPlayer)	
+	
 	s_Table = {author = s_OtherPlayer.name, content = p_Message, target = s_Target, playerRelation = s_PlayerRelation}
 	WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 
 	::continue::
-
+	print(s_Table)
 	-- A new chat message is being created; 
 	-- prevent the game from rendering it.
 	p_Hook:Return()
