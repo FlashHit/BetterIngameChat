@@ -16,6 +16,8 @@ interface Props {
 const Title: React.FC<Props> = ({ target, isTypingActive, doneTypeing, playerList }) => {
     const [inputMessage, setInputMessage] = useState<string>('');
     const [targetName, setTargetName] = useState<string|null>(null);
+    const targetRef = useRef(targetName);
+    targetRef.current = targetName;
 
     const onChange = (event: any) => {
         setInputMessage(event.target.value);
@@ -40,11 +42,17 @@ const Title: React.FC<Props> = ({ target, isTypingActive, doneTypeing, playerLis
         }
     }
 
-    const onBlur = () => {
-        if (target !== MessageTarget.CctPlayer ) {
+    const onBlur = (typeHead: boolean = false) => {
+        setTimeout(() => {
             resetInputMessage();
+
+            if (typeHead && targetRef.current !== null) {
+                return;
+            }
+
+            setTargetName(null);
             resetKeyboardAndMouse();
-        }
+        }, 100);
     }
 
     const onSubmit = (event: any) => {
@@ -118,7 +126,7 @@ const Title: React.FC<Props> = ({ target, isTypingActive, doneTypeing, playerLis
                             maxVisible={3} 
                             value={inputMessage} 
                             onKeyDown={onKeyDown} 
-                            onBlur={onBlur} 
+                            onBlur={() => onBlur(true)} 
                             onChange={onChange}
                             innerRef={inputEl}
                             inputProps={inputProps}
@@ -133,7 +141,7 @@ const Title: React.FC<Props> = ({ target, isTypingActive, doneTypeing, playerLis
                             maxLength={127}
                             value={inputMessage} 
                             onKeyDown={onKeyDown} 
-                            onBlur={onBlur} 
+                            onBlur={() => onBlur(false)} 
                             onChange={onChange}
                             spellCheck={false}
                             ref={inputEl}
