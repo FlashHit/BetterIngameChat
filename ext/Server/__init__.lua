@@ -27,11 +27,29 @@ function BetterIngameChat:OnServerRoundOver(p_RoundTime, p_WinningTeam)
 end
 
 function BetterIngameChat:OnPlayerChat(p_Player, p_RecipientMask, p_Message)
+
     if self.m_IsEndScreen == true then
-		NetEvents:Broadcast('EndScreenMessage', {p_Player.name, p_RecipientMask, p_Message})
-		-- TODO: Fix p_RecipientMask
-		-- RCON:TriggerEvent("player.onChat",{p_Player.name, p_Message, p_RecipientMask})
+	
+		local s_Target = "none"
+		local s_TeamId = nil
+		local s_SquadId = nil
+		
+		if p_RecipientMask > 1000000000000 then
+			s_Target = "all"
+		elseif p_RecipientMask == 1 then
+			s_Target = "team"
+		elseif p_RecipientMask == 2 then
+			s_Target = "team"
+		elseif p_RecipientMask >= 83 and p_RecipientMask <= 115 then
+			s_Target = "squad"
+		elseif p_RecipientMask >= 50 and p_RecipientMask <= 82 then
+			s_Target = "squad"
+		end
+		
+		NetEvents:Broadcast('EndScreenMessage', {p_Player.name, s_Target, p_Message})
+		
 	end
+	
 end
 
 function BetterIngameChat:OnLevelLoaded(p_LevelName, p_GameMode, p_Round, p_RoundsPerMap)
