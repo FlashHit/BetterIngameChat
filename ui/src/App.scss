@@ -321,13 +321,13 @@ h6 {
             }
         }
 
-        .chatLocalPlayer {
+        &.chatLocalPlayer {
             .chatSender {
                 color: var(--all);
             }
         }
 
-        .chatSpectator {
+        &.chatSpectator {
             .chatSender {
                 color: var(--admin);
             }
