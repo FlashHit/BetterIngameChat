@@ -49,26 +49,41 @@ function OutgoingMessages:OnWebUIOutgoingChatMessage(p_JsonData)
 	
 	if p_Target == 'squadleader' then
 		NetEvents:Send('Message:ToSquadLeaders', {p_Message})
+		
+		s_Table = {author = s_LocalPlayer.name, content = p_Message, target = "squadLeader", playerRelation = "localPlayer", targetName = nil}	
+		WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 		return
 	end
 	
 	if p_Target == 'player' and p_TargetName ~= nil then
 		NetEvents:Send('Message:ToPlayer', {p_Message, p_TargetName})
+		
+		s_Table = {author = s_LocalPlayer.name, content = p_Message, target = "player", playerRelation = "localPlayer", targetName = p_TargetName}	
+		WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 		return
 	end
 	
 	if p_Target == 'admin'then
 		NetEvents:Send('AdminMessage:ToAll', {p_Message, false})
+		
+		s_Table = {author = s_LocalPlayer.name, content = p_Message, target = "admin", playerRelation = "localPlayer", targetName = nil}	
+		WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 		return
 	end
 	
 	if p_Target == 'adminAnonym' then
 		NetEvents:Send('AdminMessage:ToAll', {p_Message, true})
+		
+		s_Table = {author = "", content = p_Message, target = "admin", playerRelation = "localPlayer", targetName = nil}	
+		WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 		return
 	end
 	
 	if p_Target == 'adminPlayer' and p_TargetName ~= nil then
 		NetEvents:Send('AdminMessage:ToPlayer', {p_Message, p_TargetName})
+		
+		s_Table = {author = s_LocalPlayer.name, content = p_Message, target = "admin", playerRelation = "localPlayer", targetName = p_TargetName}	
+		WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 		return
 	end
 

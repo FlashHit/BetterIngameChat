@@ -24,13 +24,19 @@ function EnableTyping:OnInputConceptEvent(p_Hook, p_EventType, p_Action)
 	end
 	
 	if self.m_IsAdmin == true then
-		if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftCtrl) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and (p_Action == UIInputAction.UIInputAction_SquadChat) then
+		if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftCtrl) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and p_Action == UIInputAction.UIInputAction_SquadChat then
 			WebUI:ExecuteJS(string.format("OnFocus('%s')", ChatConfig.ctrlSquadCombination))
 			p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
 			return
 		end
 		
-		if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftCtrl) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and (p_Action == UIInputAction.UIInputAction_SayAllChat or p_Action == UIInputAction.UIInputAction_TeamChat) then
+		if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftCtrl) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and p_Action == UIInputAction.UIInputAction_TeamChat then
+			WebUI:ExecuteJS(string.format("OnFocus('%s')", ChatConfig.ctrlTeamCombination))
+			p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
+			return
+		end
+		
+		if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftCtrl) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and p_Action == UIInputAction.UIInputAction_SayAllChat then
 			WebUI:ExecuteJS(string.format("OnFocus('%s')", ChatConfig.ctrlCombination))
 			p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
 			return
