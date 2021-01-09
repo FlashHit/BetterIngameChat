@@ -29,6 +29,8 @@ end
 function BetterIngameChat:OnPlayerChat(p_Player, p_RecipientMask, p_Message)
     if self.m_IsEndScreen == true then
 		NetEvents:Broadcast('EndScreenMessage', {p_Player.name, p_RecipientMask, p_Message})
+		-- TODO: Fix p_RecipientMask
+		-- RCON:TriggerEvent("player.onChat",{p_Player.name, p_Message, p_RecipientMask})
 	end
 end
 
@@ -37,58 +39,67 @@ function BetterIngameChat:OnLevelLoaded(p_LevelName, p_GameMode, p_Round, p_Roun
 end
 
 function BetterIngameChat:OnMessageToSquadLeaders(p_Player, p_Content)
-	local s_Message = "SquadLeaderMessage:" .. p_Player.name .. p_Content[1]
+	if p_Player.isSquadLeader == false then
+		RCON:SendCommand("admin.say", {"ERROR: You are no squad leader.", p_Player.name})
+		return
+	end
+	
+	local s_Message = p_Content[1]
+	
 	for i,l_Player in pairs(PlayerManager:GetPlayersByTeam(p_Player.teamId)) do
 		if l_Player.isSquadLeader == true then
-			ChatManager:SendMessage(s_Message, l_Player)
+			NetEvents:SendTo('ToClient:MessageToSquadLeaders', l_Player, {p_Player.name, s_Message})
+			RCON:TriggerEvent("player.onChat",{p_Player.name, "SquadLeaderMessage: " .. s_Message, l_Player.name})
 		end
 	end
-	-- TODO: send message to the sender
 end
 
 function BetterIngameChat:OnMessageToPlayer(p_Player, p_Content)
-	local s_TargetPlayerMessage = "DirectPlayerMessage " .. p_Player.name .. " DirectPlayerMessage" .. p_Content[1]
+	
+	local s_Message = p_Content[1]
 	local s_TargetPlayer = PlayerManager:GetPlayerByName(p_Content[2])
 	
 	if s_TargetPlayer ~= nil then
-		ChatManager:SendMessage(s_TargetPlayerMessage, s_TargetPlayer)
-		local s_SenderReturnMessage = "DirectReturnMessage " .. s_TargetPlayer.name .. " DirectReturnMessage" .. p_Content[1]
-		ChatManager:SendMessage(s_SenderReturnMessage, p_Player)
+		NetEvents:SendTo('ToClient:MessageToPlayer', s_TargetPlayer, {p_Player.name, s_Message})
+		-- commented out for privacy
+		-- RCON:TriggerEvent("player.onChat",{p_Player.name, s_Message, s_TargetPlayer.name})
 	else
-		ChatManager:SendMessage("ERROR: Player not found.", p_Player)
+		RCON:SendCommand("admin.say", {"ERROR: Player not found.", p_Player.name})
 	end
 end
 
 function BetterIngameChat:OnAdminMessageToPlayer(p_Player, p_Content)
 	if m_AdminList[p_Player.name] == nil then
-		-- player is no admin
+		RCON:SendCommand("admin.say", {"ERROR: You are no admin.", p_Player.name})
 		return
 	end
-	local s_Message = p_Player.name": " .. p_Content[1]
+	
+	local s_Message = p_Content[1]
 	local s_TargetPlayer = PlayerManager:GetPlayerByName(p_Content[2])
 	
 	if s_TargetPlayer ~= nil then
-		ChatManager:SendMessage(s_Message, s_TargetPlayer)
+		NetEvents:SendTo('ToClient:AdminMessageToPlayer', s_TargetPlayer, {p_Player.name, s_Message})
+		RCON:TriggerEvent("player.onChat",{p_Player.name, s_Message, s_TargetPlayer.name})
+		-- player.onChat senderName "test message" targetName
 	end
-	-- TODO: send message to the sender
 end
 
 function BetterIngameChat:OnAdminMessageToAll(p_Player, p_Content)
 	if m_AdminList[p_Player.name] == nil then
-		-- player is no admin
+		RCON:SendCommand("admin.say", {"ERROR: You are no admin.", p_Player.name})
 		return
 	end
-	local s_IsAnonymMessage = p_Content[2]
+	
 	local s_Message = p_Content[1]
+	local s_IsAnonymMessage = p_Content[2]
 	
 	if s_IsAnonymMessage == false then
-		s_Message = p_Player.name": " .. p_Content[1]
+		NetEvents:Broadcast('ToClient:AdminMessage', {s_Message, p_Player.name})
+		RCON:TriggerEvent("player.onChat",{p_Player.name, s_Message, "all"})
+	else
+		NetEvents:Broadcast('ToClient:AdminMessage', {s_Message})
+		RCON:TriggerEvent("player.onChat",{p_Player.name, "Anonym: " .. s_Message, "all"})
 	end
-	
-	if s_TargetPlayer ~= nil then
-		ChatManager:SendMessage(s_Message)
-	end
-	-- TODO: send message to the sender
 end
 
 -- Region gameAdmin
