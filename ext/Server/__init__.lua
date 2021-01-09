@@ -147,7 +147,7 @@ end
 
 function BetterIngameChat:OnPlayerAuthenticated(p_Player)
 	-- send NetEvent if admin
-	if self.m_AdminList[p_PlayerName] ~= nil then
+	if self.m_AdminList[p_Player.name] ~= nil then
 		NetEvents:SendTo('AddAdminPlayer', p_Player)
 	end
 end
