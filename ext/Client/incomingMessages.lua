@@ -65,12 +65,6 @@ function IncomingMessages:OnUICreateChatMessage(p_Hook, p_Message, p_Channel, p_
 	elseif p_Channel == ChatChannelType.CctSayAll then
 		s_Target = "all"
 
-	-- Player sends a squad leader message
-	--[[ this will be moved up to the CctAdmin part
-	elseif p_Channel == ChatChannelType.CctSquadLeader or (ChatChannelType.CctTeam and p_Message:gsub(":.*$", "") == "SquadLeaderMessage") then
-		p_Message = p_Message:match("^[a-z]+:(.*)$")
-		s_Target = "squadLeader"]]
-		
 	-- Display team message.
 	elseif p_Channel == ChatChannelType.CctTeam then
 		s_Target = "team"
