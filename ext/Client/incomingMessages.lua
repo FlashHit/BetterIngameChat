@@ -1,10 +1,6 @@
 class 'IncomingMessages'
 
---local MutedPlayerList = require 'mutedPlayerList'
-
 function IncomingMessages:__init()
-
-	--self.m_MutedPlayerList = MutedPlayerList()
 	
 	self.m_CreateChatMessage = Hooks:Install('UI:CreateChatMessage',999, self, self.OnUICreateChatMessage)
 	
