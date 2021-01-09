@@ -88,7 +88,7 @@ function BetterIngameChat:OnMessageToPlayer(p_Player, p_Content)
 end
 
 function BetterIngameChat:OnAdminMessageToPlayer(p_Player, p_Content)
-	if m_AdminList[p_Player.name] == nil then
+	if self.m_AdminList[p_Player.name] == nil then
 		RCON:SendCommand("admin.say", {"ERROR: You are no admin.", "player", p_Player.name})
 		return
 	end
@@ -104,7 +104,7 @@ function BetterIngameChat:OnAdminMessageToPlayer(p_Player, p_Content)
 end
 
 function BetterIngameChat:OnAdminMessageToAll(p_Player, p_Content)
-	if m_AdminList[p_Player.name] == nil then
+	if self.m_AdminList[p_Player.name] == nil then
 		RCON:SendCommand("admin.say", {"ERROR: You are no admin.", "player", p_Player.name})
 		return
 	end
