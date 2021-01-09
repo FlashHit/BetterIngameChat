@@ -92,6 +92,7 @@ const Title: React.FC<Props> = ({ target, isTypingActive, doneTypeing, playerLis
     const inputProps = {
         maxLength: 127,
         type: "text",
+        spellCheck: false,
     };
 
     return (

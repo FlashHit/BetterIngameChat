@@ -36,6 +36,7 @@ const App: React.FC = () => {
             senderName: username(),
             messageTarget: MessageTarget.CctSquad,
             playerRelation: "localPlayer",
+            targetName: null,
         });
     }
 
@@ -64,6 +65,25 @@ const App: React.FC = () => {
         }
 
         return classes;
+    }
+
+    const getChatItemTarget = (message: Message) => {
+        console.log(message);
+        if (message.messageTarget === MessageTarget.CctPlayer) {
+            if (message.playerRelation === "localPlayer") {
+                if (message.targetName !== undefined) {
+                    return 'TO ' + message.targetName;
+                } else {
+                    return 'FROM';
+                }
+            } else {
+                return 'FROM';
+            }
+        } else if(message.messageTarget === MessageTarget.CctEnemy) {
+            return 'ALL';
+        } else {
+            return MessageTargetString[message.messageTarget];
+        }
     }
 
     const messageEl = useRef(null);
@@ -132,6 +152,7 @@ const App: React.FC = () => {
             senderName: p_DataJson.author.toString(),
             messageTarget: p_DataJson.target,
             playerRelation: p_DataJson.playerRelation,
+            targetName: p_DataJson.targetName,
         });
     }
 
@@ -192,7 +213,7 @@ const App: React.FC = () => {
                         {messages.map((message: Message, index: number) => (
                             <div className={getChatItemClasses(message)} key={index}>
                                 <span className="chatMessageTarget">
-                                    [{MessageTargetString[message.messageTarget] === "Enemy" ? "All" : MessageTargetString[message.messageTarget]}]
+                                    [{getChatItemTarget(message)}]
                                 </span>
                                 <span className="chatSender">
                                     {message.senderName}:

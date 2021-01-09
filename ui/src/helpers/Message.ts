@@ -4,7 +4,8 @@ interface Message {
     message: string;
     senderName: string;
     messageTarget: MessageTarget;
-    playerRelation: string,
+    playerRelation: string;
+    targetName: string|null;
 }
 
 export default Message;
