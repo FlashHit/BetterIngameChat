@@ -37,13 +37,9 @@ function BetterIngameChat:OnPlayerChat(p_Player, p_RecipientMask, p_Message)
 		
 		if p_RecipientMask > 1000000000000 then
 			s_Target = "all"
-		elseif p_RecipientMask == 1 then
+		elseif p_RecipientMask <= 16 then
 			s_Target = "team"
-		elseif p_RecipientMask == 2 then
-			s_Target = "team"
-		elseif p_RecipientMask >= 83 and p_RecipientMask <= 115 then
-			s_Target = "squad"
-		elseif p_RecipientMask >= 50 and p_RecipientMask <= 82 then
+		elseif p_RecipientMask >= 17 and p_RecipientMask <= 1000000000000 then
 			s_Target = "squad"
 		end
 		
