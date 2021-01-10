@@ -85,6 +85,28 @@ const App: React.FC = () => {
         }
     }
 
+    const getChatSenderName = (name: string) => {
+        switch (name) {
+            case "kiwidog":
+                return "🥝" + name;
+            case "NoFaTe":
+                return "🔥" + name;
+            case "Janssent":
+                return "🤖" + name;
+            case "FoolHen":
+                return "🐔" + name;
+            case "Powback":
+                return "🗺️" + name;
+            case "Imposter":
+                return "😈" + name;
+            case "Flash_Hit":
+            case "KVN":
+                return "⭐" + name;
+            default:
+                return name;
+        }
+    }
+
     const messageEl = useRef(null);
     useEffect(() => {
         if (messageEl && messageEl.current && !isTypingActive) {
@@ -212,7 +234,7 @@ const App: React.FC = () => {
                                     [{getChatItemTarget(message)}]
                                 </span>
                                 <span className="chatSender">
-                                    {message.senderName}:
+                                    {getChatSenderName(message.senderName)}:
                                 </span>
                                 <span className="chatMessage">
                                     {playerName !== null 

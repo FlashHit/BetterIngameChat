@@ -14,7 +14,7 @@ Based on the [Advanced-Chat](https://github.com/EmulatorNexus/Advanced-Chat/) mo
   
 - Direct Messages
   - Press **Shift + Chatkey**, search for the player's name, Tab or select his name from the dropdown, type in the message and send.
-- Name higlighter
+- Name highlighter
   - If you send a message that contains `@PlayerNameHere`, thier name will get highlighted for them.
 - Spectator chat support
 - End of round chat support
@@ -26,9 +26,9 @@ Based on the [Advanced-Chat](https://github.com/EmulatorNexus/Advanced-Chat/) mo
 - **(SOON™)** Emoji support like: `:pog:`
 
 ### Devs
-- [FlashHit](https://github.com/FlashHit)
+- [Flash_Hit](https://github.com/FlashHit)
 - [KVN](https://github.com/kaloczikvn)
-- 
+
 Big thanks to the original crators of the Advanced-Chat mod:
 - [FoolHen](https://github.com/FoolHen)
 - [OrfeasZ](https://github.com/OrfeasZ)
