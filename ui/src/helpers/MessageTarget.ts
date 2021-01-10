@@ -2,7 +2,7 @@ export enum MessageTarget {
     CctSayAll = 'all',
     CctTeam = 'team',
     CctSquad = 'squad',
-    CctSquadLeader = 'squadleader',
+    CctSquadLeader = 'squadLeader',
     CctAdmin = 'admin',
     CctPlayer = 'player',
     CctEnemy = 'enemy',
