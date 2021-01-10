@@ -1,11 +1,11 @@
 ChatConfig = 
 {
-	sayAllChat = "all",
-	teamChat = "team",
-	squadChat = "squad",
-	shiftCombination = "player",
-	ctrlCombination = "admin",
-	ctrlTeamCombination = "adminAnonym",
-	ctrlSquadCombination = "adminPlayer"
+	sayAllChat = true,
+	teamChat = true,
+	squadChat = true,
+	playerChat = true,
+	squadLeaderChat = true,
+	adminSayAllChat = true,
+	anonymAdminSayAllChat = true,
+	adminPlayerChat = true
 }
--- available values: "all", "team", "squadleader", "squad", "player", "admin", "adminAnonym", "adminPlayer" (only for admins)
