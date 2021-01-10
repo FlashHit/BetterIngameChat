@@ -1,38 +1,37 @@
 # BetterIngameChat
 
-- Background color represents the channel:
-  - Admin = Purple? -- maybe just the normal channel? like if its a admin message for all then black, if its for a player then pink(?) -- but [ADMIN] always purple? -- the question is how I see if the admin message was sent to me or to all?
-  -- OR we make it always purple but the [ADMIN] color tells us if its a direct or all message
-  -- Edit: I will just make [From ADMIN] for player
-  - All = (red/)orange (enemy) or black (teammate/squadmate) -- orange is cool but maybe black would be enough, dunno.
-  - Team = blue
-  - Squad = green
-  - SquadLeader = blue (too) -- maybe a darker blue idk
-  - (DirectMessage) Player = Pink? or darker red [From]
-  - (DirectMessage) LocalPlayer = `[To <playername>]`
- -- forgot to send a message back to the localplayer same with sqleader
+Based on the [Advanced-Chat](https://github.com/EmulatorNexus/Advanced-Chat/) mod BetterIngameChat is a replacement for the default chat window.
 
-maybe there should be background color and [All] color etc. separated? then I would remove s_Target and add s_Channel for background and s_Tag for [ALL] etc.
+### Features
+- Responsive layout
+- Color represented channels (heavily inspired by the Reality Mod's chat UI design)
+  - All = Orange (enemy), Blue (teammate), Lime (squadmate)
+  - Team = Blue
+  - Squad = Lime
+  - SquadLeader = Teal
+  - DirectMessage = Purple
+  - Admin = Pink
+  
+- Direct Messages
+  - Press **Shift + Chatkey**, search for the player's name, Tab or select his name from the dropdown, type in the message and send.
+- Name higlighter
+  - If you send a message that contains `@PlayerNameHere`, thier name will get highlighted for them.
+- Spectator chat support
+- End of round chat support
+- Squad Leader channel support - **Shift + SquadChatkey**
+- Admin support (requires gameAdmin to track if they are admin)
+  - **Ctrl + AllChatkey**  - Admin message to all channel
+  - **Ctrl + TeamChatkey**  - Anonymus admin message to all channel
+  - **Ctrl + SquadChatkey**  - Admin direct mesage to a player
+- **(SOON™)** Emoji support like: `:pog:`
 
-- Player color represents the relation:
-  - LocalPlayer = white
-  - SquadMate = green
-  - TeamMate = blue
-  - Enemy = (red/)orange
-  - Admin(Player) = purple or normal color? -- format is: `[ADMIN] playername: message` -- so I think it could be also just the normal player relation color 
-  (playername needs to be implemented as well then, but should be easy. will be just on the server like `Netevents.... player, (message) message = player.name .. ": " .. message`
-  - Directmessage? = pink as well? or darker red -- because what if an enemy sends a direct message? then its orange on pink or on darker red 
-  - Spectator = black? brown? yellow?
-  
-  
-- Direct Messages (Shift + Chatkey)
-- Normal Messages will highlight @Player in it
-- @player and direct messages will open a dropdown to choose the targetPlayer faster
-- Emoji support :kek:
-- Spectator support (in vanilla the chat is off, I would let them write, even in all channel)
-- Squad Leader support (disabled by default)
-- Server chat config: 
-  - Enable/ disable channels
-- Admin support (requires gameAdmin to track if they are admin) and then we make (Ctrl + Chatkey) -- or maybe just Shift + SayAllChat -- thinking about sending private messages as admin
-      -- maybe (Ctrl + chatKey) => Admin message to all channel
-      -- but (Ctrl + squadChatKey) => Admin direct player message
+### Devs
+- [FlashHit](https://github.com/FlashHit)
+- [KVN](https://github.com/kaloczikvn)
+- 
+Big thanks to the original crators of the Advanced-Chat mod:
+- [FoolHen](https://github.com/FoolHen)
+- [OrfeasZ](https://github.com/OrfeasZ)
+- [Powback](https://github.com/Powback)
+
+*We wanted to create a Pull Request first but Vue is really not my cup of tea and I don't want to overwrite the whole ui of your project just beacuse I work in React, but we can still contribute to that project if you'd like it!*
