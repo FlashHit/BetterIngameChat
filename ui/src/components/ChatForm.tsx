@@ -132,20 +132,50 @@ const Title: React.FC<Props> = ({ target, isTypingActive, doneTypeing, playerLis
                             inputProps={inputProps}
                             onOptionSelected={(value: any) => {
                                 setTargetName(value);
+                                setInputMessage('');
                             }}
                             placeholder="Search for a player..."
                         />
                     :
-                        <input 
-                            type="text" 
-                            maxLength={127}
-                            value={inputMessage} 
-                            onKeyDown={onKeyDown} 
-                            onBlur={() => onBlur(false)} 
-                            onChange={onChange}
-                            spellCheck={false}
-                            ref={inputEl}
-                        />
+                        <>
+                            <input 
+                                type="text" 
+                                maxLength={127}
+                                value={inputMessage} 
+                                onKeyDown={onKeyDown} 
+                                onBlur={() => onBlur(false)} 
+                                onChange={onChange}
+                                spellCheck={false}
+                                ref={inputEl}
+                            />
+                            {/*<Typeahead 
+                                options={playerList} 
+                                maxVisible={3} 
+                                value={inputMessage} 
+                                onKeyDown={onKeyDown} 
+                                onBlur={() => onBlur(true)} 
+                                onChange={onChange}
+                                innerRef={inputEl}
+                                inputProps={inputProps}
+                                onOptionSelected={(value: any) => {
+                                    setInputMessage(value);
+                                }}
+                                clearOnSelection={true}
+                                searchOptions={(value: string, options: any) => {
+                                    if (value.includes("@")) {
+                                        var name = value.split('@')[1].toLowerCase();
+                                        return options.filter(
+                                            (item: any) => {
+                                                return item.toLowerCase().includes(name);
+                                            }
+                                        );
+                                    } else {
+                                        return [];
+                                    }
+                                }}
+                                placeholder="Type your message..."
+                            />*/}
+                        </>
                     }
                 </div>
             }

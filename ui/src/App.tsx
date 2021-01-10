@@ -34,8 +34,8 @@ const App: React.FC = () => {
         addMessage({
             message: "@" + loremIpsum({ p: 1, avgSentencesPerParagraph: 2, startWithLoremIpsum: false }).toString(),
             senderName: username(),
-            messageTarget: MessageTarget.CctSquad,
-            playerRelation: "localPlayer",
+            messageTarget: MessageTarget.CctPlayer,
+            playerRelation: "none",
             targetName: null,
         });
     }
@@ -200,7 +200,7 @@ const App: React.FC = () => {
             }
             <div id="debug">
                 <button onClick={() => setRandomMessages()}>Random messages</button>
-                <button onClick={() =>  window.OnFocus(MessageTarget.CctPlayer)}>isTypingActive</button>
+                <button onClick={() =>  window.OnFocus(MessageTarget.CctAdmin)}>isTypingActive</button>
                 <button onClick={() =>  window.OnChangeType()}>OnChangeType</button>
             </div>
 
