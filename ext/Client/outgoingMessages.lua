@@ -47,7 +47,7 @@ function OutgoingMessages:OnWebUIOutgoingChatMessage(p_JsonData)
 		return
 	end
 	
-	if p_Target == 'squadleader' then
+	if p_Target == 'squadLeader' then
 		NetEvents:Send('Message:ToSquadLeaders', {p_Message})
 		
 		--s_Table = {author = s_LocalPlayer.name, content = p_Message, target = "squadLeader", playerRelation = "localPlayer", targetName = nil}	
@@ -76,7 +76,7 @@ function OutgoingMessages:OnWebUIOutgoingChatMessage(p_JsonData)
 	if p_Target == 'adminPlayer' and p_TargetName ~= nil then
 		NetEvents:Send('AdminMessage:ToPlayer', {p_Message, p_TargetName})
 		
-		s_Table = {author = s_LocalPlayer.name, content = p_Message, target = "admin", playerRelation = "localPlayer", targetName = p_TargetName}	
+		s_Table = {author = s_LocalPlayer.name, content = p_Message, target = "adminPlayer", playerRelation = "localPlayer", targetName = p_TargetName}	
 		WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 		return
 	end
