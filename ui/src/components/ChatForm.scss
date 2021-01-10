@@ -94,6 +94,17 @@
         }
     }
 
+    &.Player {
+        label {
+            background: var(--spectator);
+            color: #000;
+        }
+        
+        input {
+            color: var(--spectator);
+        }
+    }
+
     ul.typeahead-selector {
         position: absolute;
         margin: 0;

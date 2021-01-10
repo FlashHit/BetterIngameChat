@@ -137,14 +137,14 @@ h6 {
     left: 3vw;
     top: 6vh;
     width: 25.2vw;
-    height: 30vh;
+    height: 26vh;
 
     .chatWindow {
         overflow-x: hidden;
         overflow-y: hidden;
         transition: background 0.1s ease;
         width: 25vw;
-        height: 30vh;
+        height: 26vh;
     }
     
     &.isTypingActive,
@@ -167,7 +167,7 @@ h6 {
 
     .chatItem {
         display: inline-block;
-        margin: 0.25vh 0 0 0;
+        margin: 0.15vw 0 0 0;
         font-size: .85vw;
         line-height: 1.35;
         font-weight: 400;
@@ -319,6 +319,26 @@ h6 {
         }
 
         &.chatTypeSpectator {
+            border-color: var(--team);
+
+            &::before {
+                content: '';
+                position: absolute;
+                background: var(--team-gradient);
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                z-index: -1;
+            }
+
+            .chatSender,
+            .chatMessageTarget {
+                color: var(--team);
+            }
+        }
+
+        &.chatTypePlayer {
             border-color: var(--spectator);
 
             &::before {
@@ -335,26 +355,6 @@ h6 {
             .chatSender,
             .chatMessageTarget {
                 color: var(--spectator);
-            }
-        }
-
-        &.chatTypePlayer {
-            border-color: var(--player);
-
-            &::before {
-                content: '';
-                position: absolute;
-                background: var(--player-gradient);
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                z-index: -1;
-            }
-
-            .chatSender,
-            .chatMessageTarget {
-                color: var(--player);
             }
         }
 
@@ -378,7 +378,7 @@ h6 {
 
         &.chatSpectator {
             .chatSender {
-                color: var(--admin);
+                color: var(--team);
             }
         }
     }
