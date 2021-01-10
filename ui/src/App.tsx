@@ -69,7 +69,7 @@ const App: React.FC = () => {
 
     const getChatItemTarget = (message: Message) => {
         console.log(message);
-        if (message.messageTarget === MessageTarget.CctPlayer) {
+        if (message.messageTarget === MessageTarget.CctPlayer || message.messageTarget === MessageTarget.CctAdminPlayer) {
             if (message.playerRelation === "localPlayer") {
                 if (message.targetName !== undefined) {
                     return 'TO ' + message.targetName;

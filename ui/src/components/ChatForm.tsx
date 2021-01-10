@@ -58,7 +58,7 @@ const Title: React.FC<Props> = ({ target, isTypingActive, doneTypeing, playerLis
     const onSubmit = (event: any) => {
         event.preventDefault();
 
-        if (target === MessageTarget.CctPlayer && targetName === null) {
+        if ((target === MessageTarget.CctPlayer || target === MessageTarget.CctAdminPlayer) && targetName === null) {
             return;
         }
 
@@ -119,7 +119,7 @@ const Title: React.FC<Props> = ({ target, isTypingActive, doneTypeing, playerLis
                             </>
                         }
                     </label>
-                    {(target === MessageTarget.CctPlayer && targetName === null)
+                    {((target === MessageTarget.CctPlayer || target === MessageTarget.CctAdminPlayer) && targetName === null)
                     ?
                         <Typeahead 
                             options={playerList} 
