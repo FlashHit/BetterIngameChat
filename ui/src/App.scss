@@ -84,6 +84,12 @@
 
 ::-webkit-scrollbar {
     width: .2vw;
+    transition: width .25s ease;
+}
+
+*:hover::-webkit-scrollbar {
+    width: .6vw;
+    transition: width .25s ease;
 }
 
 ::-webkit-scrollbar-track {
@@ -95,7 +101,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
+    background: #cecece; 
 }
 
 html,
@@ -145,6 +151,11 @@ h6 {
         transition: background 0.1s ease;
         width: 25vw;
         height: 26vh;
+
+        .chatWindowInner {
+            display: flex;
+            flex-flow: column;
+        }
     }
     
     &.isTypingActive,
@@ -155,6 +166,12 @@ h6 {
             background: rgba(0,0,0,0.15);
             transition: background 0.1s ease;
         }
+    }
+
+    &:hover {
+        /*.chatWindow {
+            width: 25.6vw;
+        }*/
     }
 
     &.showChat {
@@ -295,7 +312,7 @@ h6 {
 
             .chatSender,
             .chatMessageTarget {
-                color: var(--admin);
+                color: var(--admin) !important;
             }
         }
 
@@ -355,7 +372,7 @@ h6 {
 
             .chatSender,
             .chatMessageTarget {
-                color: var(--spectator);
+                color: var(--spectator) !important;
             }
         }
 
@@ -371,15 +388,15 @@ h6 {
             }
         }
 
-        &.chatLocalPlayer {
-            .chatSender {
-                color: var(--all);
-            }
-        }
-
         &.chatSpectator {
             .chatSender {
                 color: var(--team);
+            }
+        }
+
+        &.chatLocalPlayer {
+            .chatSender {
+                color: var(--all) !important;
             }
         }
     }
