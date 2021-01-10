@@ -123,9 +123,12 @@ function IncomingMessages:OnMessageToSquadLeader(p_Content)
 	local s_Author = p_Content[1]
 	local s_Message = p_Content[2]
 	
+	local s_OtherPlayer = PlayerManager:GetPlayerByName(s_Author)
+	local s_LocalPlayer = PlayerManager:GetLocalPlayer()
+	
 	local s_Target = "squadLeader"
 	local s_Table = {}
-	local s_PlayerRelation = "team"
+	local s_PlayerRelation = "none"
 	local s_TargetName = nil
 	
 	if self:CheckMuted(s_Author) then
@@ -135,6 +138,8 @@ function IncomingMessages:OnMessageToSquadLeader(p_Content)
 	if self:CheckGlobalMuted(s_Author) then
 		return
 	end
+	
+	s_PlayerRelation = self:GetPlayerRelation(s_OtherPlayer, s_LocalPlayer)	
 	
 	s_Table = {author = s_Author, content = s_Message, target = s_Target, playerRelation = s_PlayerRelation, targetName = s_TargetName}
 		

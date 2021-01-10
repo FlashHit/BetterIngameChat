@@ -24,7 +24,7 @@ function EnableTyping:OnInputConceptEvent(p_Hook, p_EventType, p_Action)
 		return
 	end
 	
-	if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftShift) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and p_Action == UIInputAction.UIInputAction_SayAllChat and ChatConfig.playerChat then
+	if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftShift) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and p_Action == UIInputAction.UIInputAction_SayAllChat and ChatConfig.playerChat and SpectatorManager:GetSpectating() == false and PlayerManager:GetLocalPlayer() ~= nil and PlayerManager:GetLocalPlayer().isSquadLeader == true then
 		WebUI:ExecuteJS(string.format("OnFocus('%s')", "squadLeader"))
 		p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
 		return
