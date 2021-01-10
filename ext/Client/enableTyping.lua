@@ -50,13 +50,23 @@ function EnableTyping:OnInputConceptEvent(p_Hook, p_EventType, p_Action)
 	end
 
 	if p_Action == UIInputAction.UIInputAction_TeamChat and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed then
-		WebUI:ExecuteJS(string.format("OnFocus('%s')", ChatConfig.teamChat))
+		if SpectatorManager:GetSpectating() then
+			WebUI:ExecuteJS(string.format("OnFocus('%s')", ChatConfig.sayAllChat))
+		else
+			WebUI:ExecuteJS(string.format("OnFocus('%s')", ChatConfig.teamChat))
+		end
+		
 		p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
 		return
 	end
 
 	if p_Action == UIInputAction.UIInputAction_SquadChat and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed then
-		WebUI:ExecuteJS(string.format("OnFocus('%s')", ChatConfig.squadChat))
+		if SpectatorManager:GetSpectating() then
+			WebUI:ExecuteJS(string.format("OnFocus('%s')", ChatConfig.sayAllChat))
+		else
+			WebUI:ExecuteJS(string.format("OnFocus('%s')", ChatConfig.squadChat))
+		end
+		
 		p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
 		return
 	end

@@ -250,6 +250,9 @@ function IncomingMessages:OnEndScreenMessage(p_Content)
 		if s_Target == "squad" and s_OtherPlayer.squadId ~= s_LocalPlayer.squadId then
 			return
 		end
+		
+	elseif (s_LocalPlayer.teamId == 0 and s_OtherPlayer.teamId == 2) or (s_LocalPlayer.teamId ~= 0 and s_OtherPlayer.teamId ~= s_LocalPlayer.teamId) then
+		s_Target = "enemy"
 	end
 	
 	s_PlayerRelation = self:GetPlayerRelation(s_OtherPlayer, s_LocalPlayer)	
