@@ -18,13 +18,13 @@ function EnableTyping:OnInputConceptEvent(p_Hook, p_EventType, p_Action)
 	-- If this is a chat-related input concept event then filter it
 	-- to prevent the game from showing the default chat dialog.
 	
-	if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftShift) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and (p_Action == UIInputAction.UIInputAction_SayAllChat or p_Action == UIInputAction.UIInputAction_TeamChat) and ChatConfig.playerChat then
+	if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftShift) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and (p_Action == UIInputAction.UIInputAction_TeamChat or p_Action == UIInputAction.UIInputAction_SquadChat) and ChatConfig.playerChat then
 		WebUI:ExecuteJS(string.format("OnFocus('%s')", "player"))
 		p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
 		return
 	end
 	
-	if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftShift) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and p_Action == UIInputAction.UIInputAction_SquadChat and ChatConfig.playerChat then
+	if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftShift) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and p_Action == UIInputAction.UIInputAction_SayAllChat and ChatConfig.playerChat then
 		WebUI:ExecuteJS(string.format("OnFocus('%s')", "squadLeader"))
 		p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
 		return
