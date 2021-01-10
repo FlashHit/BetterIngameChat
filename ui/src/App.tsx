@@ -138,9 +138,6 @@ const App: React.FC = () => {
             WebUI.Call('EnableMouse');
         }
 
-        console.log('OnFocus');
-        console.log(p_Target);
-
         setShowChat(true);
         setChatTarget(p_Target);
         setIsTypingActive(true);
@@ -167,11 +164,11 @@ const App: React.FC = () => {
     }
 
     const [playerName, setPlayerName] = useState<string|null>(null);
-    window.OnUpdatePlayerName = (p_Name: string) => {
-        setPlayerName("@" + p_Name);
+    window.OnUpdatePlayerName = (p_Name: any) => {
+        setPlayerName("@" + p_Name.toString());
     }
 
-    const [playerList, setPlayerList] = useState<string[]>(["KVN", "Bree", "Really long fucking name for my UI"]);
+    const [playerList, setPlayerList] = useState<string[]>([]);
     window.OnUpdatePlayerList = (m_CollectedPlayers: any) => {
         setPlayerList([]);
 

@@ -15,7 +15,7 @@ function CollectedPlayers:OnPlayerConnected(p_Player)
 			end
 		end
 
-		WebUI:ExecuteJS(string.format("OnUpdatePlayerName('%s')", tostring(p_Player.name)))
+		WebUI:ExecuteJS(string.format("OnUpdatePlayerName(%s)", json.encode(p_Player.name)))
 	else
 		self.m_CollectedPlayers[p_Player.id] = p_Player.name
 	end
