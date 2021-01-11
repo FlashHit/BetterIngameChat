@@ -8,7 +8,8 @@ function CollectedPlayers:__init()
 end
 
 function CollectedPlayers:OnPlayerConnected(p_Player)
-	if p_Player.name == PlayerManager:GetLocalPlayer().name then
+	local s_LocalPlayer = PlayerManager:GetLocalPlayer()
+	if s_LocalPlayer ~= nil and p_Player.name == s_LocalPlayer.name then
 		for _,l_Player in pairs(PlayerManager:GetPlayers()) do
 			if p_Player.name ~= l_Player.name then
 				self.m_CollectedPlayers[l_Player.id] = l_Player.name
