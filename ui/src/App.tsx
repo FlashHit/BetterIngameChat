@@ -204,6 +204,10 @@ const App: React.FC = () => {
         }
     }
 
+    window.OnClearChat = () => {
+        setMessage([]);
+    }
+
     return (
         <>
             {debugMode &&
@@ -264,5 +268,6 @@ declare global {
         OnChangeType: () => void;
         OnUpdatePlayerList: (m_CollectedPlayers: any) => void;
         OnUpdatePlayerName: (p_Name: string) => void;
+        OnClearChat: () => void;
     }
 }
