@@ -30,10 +30,12 @@ end
 function BetterIngameChat:OnPlayerChat(p_Player, p_RecipientMask, p_Message)
 
     if self.m_IsEndScreen == true then
+		
+		if p_Player == nil then
+			return
+		end
 	
 		local s_Target = "none"
-		local s_TeamId = nil
-		local s_SquadId = nil
 		
 		if p_RecipientMask > 1000000000000 then
 			s_Target = "all"
