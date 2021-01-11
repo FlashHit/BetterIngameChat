@@ -18,7 +18,7 @@ Based on the [Advanced-Chat](https://github.com/EmulatorNexus/Advanced-Chat/) mo
   - If you send a message that contains `@PlayerNameHere`, thier name will get highlighted for them.
 - Spectator chat support
 - End of round chat support
-- Squad Leader channel support - **Shift + SquadChatkey**
+- Squad Leader channel support - **Shift + AllChatkey**
 - Admin support (requires gameAdmin to track if they are admin)
   - **Ctrl + AllChatkey**  - Admin message to all channel
   - **Ctrl + TeamChatkey**  - Anonymus admin message to all channel
