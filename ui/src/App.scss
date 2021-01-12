@@ -142,15 +142,15 @@ h6 {
     position: absolute;
     left: 3vw;
     top: 6vh;
-    width: 25.2vw;
-    height: 26vh;
+    width: 20.2vw;
+    height: 25vh;
 
     .chatWindow {
         overflow-x: hidden;
         overflow-y: hidden;
         transition: background 0.1s ease;
-        width: 25vw;
-        height: 26vh;
+        width: 20vw;
+        height: 25vh;
 
         .chatWindowInner {
             display: flex;
@@ -162,16 +162,16 @@ h6 {
     &:hover {
         .chatWindow {
             overflow-y: scroll;
-            width: 25.2vw;
+            width: 20.2vw;
             background: rgba(0,0,0,0.15);
             transition: background 0.1s ease;
         }
     }
 
     &:hover {
-        /*.chatWindow {
-            width: 25.6vw;
-        }*/
+        .chatWindow {
+            width: 20.6vw;
+        }
     }
 
     &.showChat {
@@ -185,10 +185,10 @@ h6 {
     .chatItem {
         display: inline-block;
         margin: 0.15vw 0 0 0;
-        font-size: .85vw;
+        font-size: .77vw;
         line-height: 1.35;
         font-weight: 400;
-        max-width: 23vw;
+        max-width: 18vw;
         width: 100%;
         padding: 0.5vh 0.5vw;
         position: relative;
@@ -406,7 +406,7 @@ h6 {
     color: #fff;
     position: absolute;
     left: 3vw;
-    top: 37vh;
+    top: 35.5vh;
     width: 25.2vw;
     height: 3vh;
     font-size: 1vw;
