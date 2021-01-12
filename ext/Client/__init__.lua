@@ -8,6 +8,7 @@ class 'BetterIngameChat'
 function BetterIngameChat:__init()
 	-- Subscribe to events.
 	self.m_ExtensionLoadedEvent = Events:Subscribe('Extension:Loaded', self, self.OnExtensionLoaded)
+	self.m_LevelDestroyEvent = Events:Subscribe('Level:Destroy', self, self.OnLevelDestroy)
 
 	-- Initialize the other components.
 	self.m_EnableTyping = EnableTyping()
@@ -19,6 +20,10 @@ end
 
 function BetterIngameChat:OnExtensionLoaded()
 	WebUI:Init()
+end
+
+function BetterIngameChat:OnLevelDestroy()
+	WebUI:ExecuteJS("OnClearChat()")
 end
 
 g_BetterIngameChat = BetterIngameChat()
