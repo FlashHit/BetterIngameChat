@@ -77,12 +77,6 @@ const Title: React.FC<Props> = ({ target, isTypingActive, doneTypeing, playerLis
     }
 
     const resetKeyboardAndMouse = () => {
-        if (navigator.userAgent.includes('VeniceUnleashed')) {
-            WebUI.Call('ResetKeyboard');
-            WebUI.Call('SendToBack');
-            WebUI.Call('ResetMouse');
-        }
-
         doneTypeing();
     }
 

@@ -32,9 +32,9 @@ const App: React.FC = () => {
 
     const setRandomMessages = () => {
         addMessage({
-            message: "@" + loremIpsum({ p: 1, avgSentencesPerParagraph: 2, startWithLoremIpsum: false }).toString(),
+            message: loremIpsum({ p: 1, avgSentencesPerParagraph: 2, startWithLoremIpsum: false }).toString(),
             senderName: username(),
-            messageTarget: MessageTarget.CctPlayer,
+            messageTarget: MessageTarget.CctSayAll,
             playerRelation: "none",
             targetName: null,
         });
@@ -208,13 +208,28 @@ const App: React.FC = () => {
         setMessage([]);
     }
 
+    window.OnCloseChat = () => {
+        setCloseChat();
+    }
+
+    const setCloseChat = () => {
+        if (navigator.userAgent.includes('VeniceUnleashed')) {
+            WebUI.Call('ResetKeyboard');
+            WebUI.Call('SendToBack');
+            WebUI.Call('ResetMouse');
+        }
+
+        setIsTypingActive(false);
+    }
+
+
     return (
         <>
             {debugMode &&
                 <style dangerouslySetInnerHTML={{
                     __html: `
                     body {
-                        background: #333;
+                        background: #fff;
                     }
 
                     #debug {
@@ -225,8 +240,10 @@ const App: React.FC = () => {
             }
             <div id="debug">
                 <button onClick={() => setRandomMessages()}>Random messages</button>
-                <button onClick={() =>  window.OnFocus(MessageTarget.CctAdmin)}>isTypingActive</button>
+                <button onClick={() =>  window.OnFocus(MessageTarget.CctSayAll)}>isTypingActive</button>
                 <button onClick={() =>  window.OnChangeType()}>OnChangeType</button>
+                <button onClick={() =>  window.OnClearChat()}>OnClearChat</button>
+                <button onClick={() =>  window.OnCloseChat()}>OnCloseChat</button>
             </div>
 
             <div id="VuChat" className={(showChat ? "showChat" : "hideChat") + ((isTypingActive || chatState === ChatState.Always) ? " isTypingActive": "")}>
@@ -252,7 +269,7 @@ const App: React.FC = () => {
                         ))}
                     </div>
                 </div>
-                <ChatForm target={chatTarget} isTypingActive={isTypingActive} doneTypeing={() => setIsTypingActive(false)} playerList={playerList} />
+                <ChatForm target={chatTarget} isTypingActive={isTypingActive} doneTypeing={() => setCloseChat()} playerList={playerList} />
             </div>
             <ChatStatePopup chatState={chatState} />
         </>
@@ -269,5 +286,6 @@ declare global {
         OnUpdatePlayerList: (m_CollectedPlayers: any) => void;
         OnUpdatePlayerName: (p_Name: string) => void;
         OnClearChat: () => void;
+        OnCloseChat: () => void;
     }
 }
