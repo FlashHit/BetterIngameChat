@@ -2,10 +2,10 @@
 	"Name": "BetterIngameChat",
 	"Authors": [ "KVN", "Flash_Hit", "NoFaTe", "FoolHen", "Powback" ],
 	"Description": "A fancy BF3 Chat with more functions.",
-	"Version": "1.0.0",
-    "HasVeniceEXT": true,
-    "HasWebUI": true,
-    "Dependencies": {
-        "veniceext": "^1.0.0"
-    }
+	"Version": "1.0.1",
+	"HasVeniceEXT": true,
+	"HasWebUI": true,
+	"Dependencies": {
+		"veniceext": "^1.0.0"
+	}
 }
