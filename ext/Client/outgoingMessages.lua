@@ -3,6 +3,11 @@ class 'OutgoingMessages'
 function OutgoingMessages:__init()
 	self.m_SendChatMessage = Events:Subscribe('WebUI:OutgoingChatMessage', self, self.OnWebUIOutgoingChatMessage)
 	self.m_SetCursor = Events:Subscribe('WebUI:SetCursor', self, self.OnWebUISetCursor)
+	
+	self.m_EngineUpdateEvent = Events:Subscribe('Engine:Update', self, self.OnEngineUpdate)
+	self.m_EnableTimer = false
+	self.m_Timer = 0.035
+	self.m_CumulatedTime = 0
 end
 
 function OutgoingMessages:OnWebUIOutgoingChatMessage(p_JsonData)
@@ -81,7 +86,22 @@ function OutgoingMessages:OnWebUIOutgoingChatMessage(p_JsonData)
 end
 
 function OutgoingMessages:OnWebUISetCursor()
-	InputManager:SetCursorPosition(0,0)
+	local s_WindowSize = ClientUtils:GetWindowSize()
+	InputManager:SetCursorPosition(s_WindowSize.x / 2, s_WindowSize.y / 2)
+	WebUI:ResetKeyboard()
+	self.m_EnableTimer = true
+end
+
+function OutgoingMessages:OnEngineUpdate(deltaTime)
+	if not self.m_EnableTimer then
+		return
+	end
+	self.m_CumulatedTime = self.m_CumulatedTime + deltaTime
+	if self.m_CumulatedTime > self.m_Timer then
+		self.m_CumulatedTime = 0
+		self.m_EnableTimer = false
+		WebUI:ResetMouse()
+	end
 end
 
 return OutgoingMessages
