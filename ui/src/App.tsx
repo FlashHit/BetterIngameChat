@@ -24,6 +24,8 @@ const App: React.FC = () => {
         }
     }
 
+    const [hasMouse, setHasMouse] = useState<boolean>(false);
+
     const [messages, setMessage] = useState<Message[]>([]);
     const [showChat, setShowChat] = useState<boolean>(false);
     const [chatState, setChatState] = useState<ChatState>(ChatState.Popup);
@@ -100,7 +102,6 @@ const App: React.FC = () => {
             case "Imposter":
                 return "😈" + name;
             case "Flash_Hit":
-            case "KVN":
                 return "⭐" + name;
             default:
                 return name;
@@ -162,6 +163,7 @@ const App: React.FC = () => {
         setShowChat(true);
         setChatTarget(p_Target);
         setIsTypingActive(true);
+        setHasMouse(true);
     }
 
     window.OnMessage = (p_DataJson: any) => {
@@ -214,11 +216,10 @@ const App: React.FC = () => {
 
     const setCloseChat = () => {
         if (navigator.userAgent.includes('VeniceUnleashed')) {
-            WebUI.Call('ResetKeyboard');
-            WebUI.Call('SendToBack');
-            WebUI.Call('ResetMouse');
+            WebUI.Call('DispatchEventLocal', 'WebUI:SetCursor');
         }
 
+        setHasMouse(false);
         setIsTypingActive(false);
     }
 
@@ -246,7 +247,7 @@ const App: React.FC = () => {
                 <button onClick={() =>  window.OnCloseChat()}>OnCloseChat</button>
             </div>
 
-            <div id="VuChat" className={(showChat ? "showChat" : "hideChat") + ((isTypingActive || chatState === ChatState.Always) ? " isTypingActive": "")}>
+            <div id="VuChat" className={(showChat ? "showChat" : "hideChat") + ((isTypingActive || chatState === ChatState.Always) ? " isTypingActive": "") + (hasMouse ? " hasMouse":"")}>
                 <div className="chatWindow" ref={messageEl}>
                     <div className="chatWindowInner">
                         {messages.map((message: Message, index: number) => (
