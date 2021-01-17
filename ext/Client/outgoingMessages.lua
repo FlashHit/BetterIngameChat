@@ -2,6 +2,7 @@ class 'OutgoingMessages'
 
 function OutgoingMessages:__init()
 	self.m_SendChatMessage = Events:Subscribe('WebUI:OutgoingChatMessage', self, self.OnWebUIOutgoingChatMessage)
+	self.m_SetCursor = Events:Subscribe('WebUI:SetCursor', self, self.OnWebUISetCursor)
 end
 
 function OutgoingMessages:OnWebUIOutgoingChatMessage(p_JsonData)
@@ -29,8 +30,6 @@ function OutgoingMessages:OnWebUIOutgoingChatMessage(p_JsonData)
 		return
 	end
 
-	--print("message: "..p_Message..", target: "..s_Target)
-
 	-- Dispatch message based on the specified target.
 	if p_Target == 'all' then
 		ChatManager:SendMessage(p_Message)
@@ -49,9 +48,6 @@ function OutgoingMessages:OnWebUIOutgoingChatMessage(p_JsonData)
 	
 	if p_Target == 'squadLeader' then
 		NetEvents:Send('Message:ToSquadLeaders', {p_Message})
-		
-		--s_Table = {author = s_LocalPlayer.name, content = p_Message, target = "squadLeader", playerRelation = "localPlayer", targetName = nil}	
-		--WebUI:ExecuteJS(string.format("OnMessage(%s)", json.encode(s_Table)))
 		return
 	end
 	
@@ -82,6 +78,10 @@ function OutgoingMessages:OnWebUIOutgoingChatMessage(p_JsonData)
 	end
 
 	return
+end
+
+function OutgoingMessages:OnWebUISetCursor()
+	InputManager:SetCursorPosition(0,0)
 end
 
 return OutgoingMessages
