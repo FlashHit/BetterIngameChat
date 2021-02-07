@@ -43,10 +43,16 @@ const App: React.FC = () => {
     }
 
     const addMessage = (message: Message) => {
-        setMessage((prevState: any) => [
-            ...prevState,
-            message,
-        ]);
+        if (messages.length >= 50) {
+            var prevArr = messages.slice(1, 50);
+            prevArr.push(message);
+            setMessage(prevArr);
+        } else {
+            setMessage((prevState: any) => [
+                ...prevState,
+                message,
+            ]);
+        }
     }
 
     const getChatItemClasses = (message: Message) => {
