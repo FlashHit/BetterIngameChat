@@ -236,7 +236,7 @@ const App: React.FC = () => {
                 <style dangerouslySetInnerHTML={{
                     __html: `
                     body {
-                        background: #fff;
+                        background: #333;
                     }
 
                     #debug {
