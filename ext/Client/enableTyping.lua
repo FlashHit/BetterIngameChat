@@ -1,102 +1,134 @@
-class 'EnableTyping'
+---@class EnableTyping
+EnableTyping = class 'EnableTyping'
 
-require "ChatConfig"
+--get the config
+local m_Config = require "Config"
+
+--make the InputManager local
+local InputManager = InputManager
 
 function EnableTyping:__init()
 	self.m_IsAdmin = false
-	
-	-- Install our hooks.
-	self.m_InputConceptEventHook = Hooks:Install('UI:InputConceptEvent', 999, self, self.OnInputConceptEvent)
-	
-	-- NetEvents for admins
-	self.m_AddAdminPlayerEvent = NetEvents:Subscribe('AddAdminPlayer', self, self.OnAddAdminPlayer)
-	self.m_RemoveAdminPlayerEvent = NetEvents:Subscribe('RemoveAdminPlayer', self, self.OnRemoveAdminPlayer)
-	
+
+	-- NetEvents
+	NetEvents:Subscribe('AddAdminPlayer', self, self.OnAddAdminPlayer)
+	NetEvents:Subscribe('RemoveAdminPlayer', self, self.OnRemoveAdminPlayer)
 end
 
-function EnableTyping:OnInputConceptEvent(p_Hook, p_EventType, p_Action)
-	-- If this is a chat-related input concept event then filter it
-	-- to prevent the game from showing the default chat dialog.
-	
-	if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftShift) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and (p_Action == UIInputAction.UIInputAction_TeamChat or p_Action == UIInputAction.UIInputAction_SquadChat) and ChatConfig.playerChat then
+---@param p_HookCtx HookContext
+---@param p_EventType UIInputActionEventType|integer
+---@param p_Action UIInputAction|integer
+function EnableTyping:OnUIInputConceptEvent(p_HookCtx, p_EventType, p_Action)
+	-- filter for pressing key (skip releasing keys)
+	if p_EventType ~= UIInputActionEventType.UIInputActionEventType_Pressed then
+		return
+	end
+
+	-- To Player chat
+	if (p_Action == UIInputAction.UIInputAction_TeamChat or p_Action == UIInputAction.UIInputAction_SquadChat)
+	and m_Config.playerChat
+	and InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftShift) then
 		WebUI:ExecuteJS(string.format("OnFocus('%s')", "player"))
-		p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
+		p_HookCtx:Pass(UIInputAction.UIInputAction_None, p_EventType)
 		return
 	end
-	
-	if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftShift) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and p_Action == UIInputAction.UIInputAction_SayAllChat and ChatConfig.playerChat and SpectatorManager:GetSpectating() == false and PlayerManager:GetLocalPlayer() ~= nil and PlayerManager:GetLocalPlayer().isSquadLeader == true then
-		WebUI:ExecuteJS(string.format("OnFocus('%s')", "squadLeader"))
-		p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
-		return
+
+	-- SquadLeader chat
+	if p_Action == UIInputAction.UIInputAction_SayAllChat
+	and m_Config.playerChat
+	and not SpectatorManager:GetSpectating()
+	and InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftShift) then
+		local s_LocalPlayer = PlayerManager:GetLocalPlayer()
+
+		if s_LocalPlayer ~= nil	and s_LocalPlayer.isSquadLeader then
+			WebUI:ExecuteJS(string.format("OnFocus('%s')", "squadLeader"))
+			p_HookCtx:Pass(UIInputAction.UIInputAction_None, p_EventType)
+			return
+		end
 	end
-	
-	if self.m_IsAdmin == true then
-		if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftCtrl) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and p_Action == UIInputAction.UIInputAction_SquadChat and ChatConfig.adminPlayerChat == true then
+
+	-- Admin chat
+	if self.m_IsAdmin and InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftCtrl) then
+		-- admin to player chat
+		if p_Action == UIInputAction.UIInputAction_SquadChat
+		and m_Config.adminPlayerChat then
 			WebUI:ExecuteJS(string.format("OnFocus('%s')", "adminPlayer"))
-			p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
+			p_HookCtx:Pass(UIInputAction.UIInputAction_None, p_EventType)
 			return
 		end
-		
-		if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftCtrl) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and p_Action == UIInputAction.UIInputAction_TeamChat and ChatConfig.anonymAdminSayAllChat == true then
+
+		-- anonym admin all chat
+		if p_Action == UIInputAction.UIInputAction_TeamChat
+		and m_Config.anonymAdminSayAllChat then
 			WebUI:ExecuteJS(string.format("OnFocus('%s')", "adminAnonym"))
-			p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
+			p_HookCtx:Pass(UIInputAction.UIInputAction_None, p_EventType)
 			return
 		end
-		
-		if InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftCtrl) and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and p_Action == UIInputAction.UIInputAction_SayAllChat and ChatConfig.adminSayAllChat == true then
+
+		-- admin all chat
+		if p_Action == UIInputAction.UIInputAction_SayAllChat
+		and m_Config.adminSayAllChat then
 			WebUI:ExecuteJS(string.format("OnFocus('%s')", "admin"))
-			p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
+			p_HookCtx:Pass(UIInputAction.UIInputAction_None, p_EventType)
 			return
 		end
 	end
 
-	if p_Action == UIInputAction.UIInputAction_SayAllChat and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed and ChatConfig.sayAllChat == true then
+	-- all chat
+	if p_Action == UIInputAction.UIInputAction_SayAllChat and m_Config.sayAllChat then
 		WebUI:ExecuteJS(string.format("OnFocus('%s')", "all"))
-		p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
+		p_HookCtx:Pass(UIInputAction.UIInputAction_None, p_EventType)
 		return
 	end
 
-	if p_Action == UIInputAction.UIInputAction_TeamChat and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed then
+	-- team chat
+	if p_Action == UIInputAction.UIInputAction_TeamChat then
 		if SpectatorManager:GetSpectating() then
-			if ChatConfig.sayAllChat == true then
+			-- spectators have only all chat
+			if m_Config.sayAllChat then
 				WebUI:ExecuteJS(string.format("OnFocus('%s')", "all"))
 			end
-		elseif ChatConfig.teamChat == true then
+		elseif m_Config.teamChat then
 			WebUI:ExecuteJS(string.format("OnFocus('%s')", "team"))
 		end
-		
-		p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
+
+		p_HookCtx:Pass(UIInputAction.UIInputAction_None, p_EventType)
 		return
 	end
 
-	if p_Action == UIInputAction.UIInputAction_SquadChat and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed then
+	-- squad chat
+	if p_Action == UIInputAction.UIInputAction_SquadChat then
 		if SpectatorManager:GetSpectating() then
-			if ChatConfig.sayAllChat == true then
+			-- spectators have only all chat
+			if m_Config.sayAllChat then
 				WebUI:ExecuteJS(string.format("OnFocus('%s')", "all"))
 			end
-		elseif ChatConfig.squadChat == true then
+		elseif m_Config.squadChat then
 			WebUI:ExecuteJS(string.format("OnFocus('%s')", "squad"))
 		end
-		
-		p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
+
+		p_HookCtx:Pass(UIInputAction.UIInputAction_None, p_EventType)
 		return
 	end
 
-	if p_Action == UIInputAction.UIInputAction_ToggleChat and p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed then
+	-- toggle chat (hidden, pop-up, always)
+	if p_Action == UIInputAction.UIInputAction_ToggleChat then
 		WebUI:ExecuteJS("OnChangeType()")
-		p_Hook:Pass(UIInputAction.UIInputAction_None, p_EventType)
+		p_HookCtx:Pass(UIInputAction.UIInputAction_None, p_EventType)
 		return
 	end
-	
+
 	-- Otherwise, let the game handle it as it normally does.
 end
 
+-- local player is admin
 function EnableTyping:OnAddAdminPlayer()
 	self.m_IsAdmin = true
 end
 
+-- local player is no admin anymore
 function EnableTyping:OnRemoveAdminPlayer()
 	self.m_IsAdmin = false
 end
 
-return EnableTyping
+return EnableTyping()

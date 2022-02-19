@@ -1,130 +1,91 @@
-class 'BetterIngameChat'
+---@class ServerBetterIngameChat
+ServerBetterIngameChat = class 'ServerBetterIngameChat'
 
-function BetterIngameChat:__init()
-
-	self.m_IsEndScreen = false
-	
+function ServerBetterIngameChat:__init()
 	self.m_AdminList = {}
 
-	-- Subscribe to events.
-	self.m_ServerRoundOverEvent = Events:Subscribe('Server:RoundOver', self, self.OnServerRoundOver)
-	self.m_PlayerChatEvent = Events:Subscribe('Player:Chat', self, self.OnPlayerChat)
-	self.m_LevelLoadedEvent = Events:Subscribe('Level:Loaded', self, self.OnLevelLoaded)
-	-- NetEvents
-	self.m_MessageToSquadLeadersEvent = NetEvents:Subscribe('Message:ToSquadLeaders', self, self.OnMessageToSquadLeaders)
-	self.m_MessageToPlayerEvent = NetEvents:Subscribe('Message:ToPlayer', self, self.OnMessageToPlayer)
-	self.m_AdminMessageToPlayerEvent = NetEvents:Subscribe('AdminMessage:ToPlayer', self, self.OnAdminMessageToPlayer)
-	self.m_AdminMessageToAllEvent = NetEvents:Subscribe('AdminMessage:ToAll', self, self.OnAdminMessageToAll)
+	Events:Subscribe('GameAdmin:Player', self, self.OnGameAdminPlayer)
+	Events:Subscribe('GameAdmin:Clear', self, self.OnGameAdminClear)
+	Events:Subscribe('Player:Authenticated', self, self.OnPlayerAuthenticated)
 
-	-- gameAdmin Events
-	self.m_GameAdminPlayerEvent = Events:Subscribe('GameAdmin:Player', self, self.OnGameAdminPlayer)
-	self.m_GameAdminClearEvent = Events:Subscribe('GameAdmin:Clear', self, self.OnGameAdminClear)
-	self.m_PlayerAuthenticatedEvent = Events:Subscribe('Player:Authenticated', self, self.OnPlayerAuthenticated)
-	
+	NetEvents:Subscribe('ClientServer_Chat', self, self.OnChat)
 end
 
-function BetterIngameChat:OnServerRoundOver(p_RoundTime, p_WinningTeam)
-    self.m_IsEndScreen = true
-end
-
-function BetterIngameChat:OnPlayerChat(p_Player, p_RecipientMask, p_Message)
-
-    if self.m_IsEndScreen == true then
-		
-		if p_Player == nil then
+---@param p_Player Player
+---@param p_Target string
+---@param p_Message string
+---@param p_TargetName string|nil
+function ServerBetterIngameChat:OnChat(p_Player, p_Target, p_Message, p_TargetName)
+	if p_Target:match("admin") then
+		if self.m_AdminList[p_Player.name] == nil then
+			RCON:SendCommand("admin.say", {"ERROR: You are no admin.", "player", p_Player.name})
 			return
 		end
-	
-		local s_Target = "none"
-		
-		if p_RecipientMask > 1000000000000 then
-			s_Target = "all"
-		elseif p_RecipientMask <= 16 then
-			s_Target = "team"
-		elseif p_RecipientMask >= 17 and p_RecipientMask <= 1000000000000 then
-			s_Target = "squad"
+	end
+
+	if p_Target == 'all' or p_Target == 'admin' or p_Target == 'adminAnonym' then
+		NetEvents:Broadcast('ServerClient_Chat', p_Player.name, p_Target, p_Message, p_TargetName)
+		return
+	end
+
+	if p_Target == 'team' then
+		local s_Players = PlayerManager:GetPlayersByTeam(p_Player.teamId)
+
+		for _, l_Player in pairs(s_Players) do
+			NetEvents:SendTo('ServerClient_Chat', l_Player, p_Player.name, p_Target, p_Message, p_TargetName)
 		end
-		
-		NetEvents:Broadcast('EndScreenMessage', {p_Player.name, s_Target, p_Message})
-		
-	end
-	
-end
 
-function BetterIngameChat:OnLevelLoaded(p_LevelName, p_GameMode, p_Round, p_RoundsPerMap)
-    self.m_IsEndScreen = false
-end
-
-function BetterIngameChat:OnMessageToSquadLeaders(p_Player, p_Content)
-	if p_Player.isSquadLeader == false then
-		RCON:SendCommand("admin.say", {"ERROR: You are no squad leader.", "player", p_Player.name})
 		return
 	end
-	
-	local s_Message = p_Content[1]
-	
-	for i,l_Player in pairs(PlayerManager:GetPlayersByTeam(p_Player.teamId)) do
-		if l_Player.isSquadLeader == true then
-			NetEvents:SendTo('ToClient:MessageToSquadLeaders', l_Player, {p_Player.name, s_Message})
-			RCON:TriggerEvent("player.onChat",{p_Player.name, "SquadLeaderMessage: " .. s_Message, "player", l_Player.name})
+
+	if p_Target == 'squad' then
+		local s_Players = PlayerManager:GetPlayersBySquad(p_Player.teamId, p_Player.squadId)
+
+		for _, l_Player in pairs(s_Players) do
+			NetEvents:SendTo('ServerClient_Chat', l_Player, p_Player.name, p_Target, p_Message, p_TargetName)
 		end
-	end
-end
 
-function BetterIngameChat:OnMessageToPlayer(p_Player, p_Content)
-	
-	local s_Message = p_Content[1]
-	local s_TargetPlayer = PlayerManager:GetPlayerByName(p_Content[2])
-	
-	if s_TargetPlayer ~= nil then
-		NetEvents:SendTo('ToClient:MessageToPlayer', s_TargetPlayer, {p_Player.name, s_Message})
-		-- commented out for privacy
-		-- RCON:TriggerEvent("player.onChat",{p_Player.name, s_Message, "player", s_TargetPlayer.name})
-	else
-		RCON:SendCommand("admin.say", {"ERROR: Player not found.", p_Player.name})
-	end
-end
-
-function BetterIngameChat:OnAdminMessageToPlayer(p_Player, p_Content)
-	if self.m_AdminList[p_Player.name] == nil then
-		RCON:SendCommand("admin.say", {"ERROR: You are no admin.", "player", p_Player.name})
 		return
 	end
-	
-	local s_Message = p_Content[1]
-	local s_TargetPlayer = PlayerManager:GetPlayerByName(p_Content[2])
-	
-	if s_TargetPlayer ~= nil then
-		NetEvents:SendTo('ToClient:AdminMessageToPlayer', s_TargetPlayer, {p_Player.name, s_Message})
-		RCON:TriggerEvent("player.onChat",{p_Player.name, s_Message, "player", s_TargetPlayer.name})
-		-- player.onChat senderName "test message" targetName
-	end
-end
 
-function BetterIngameChat:OnAdminMessageToAll(p_Player, p_Content)
-	if self.m_AdminList[p_Player.name] == nil then
-		RCON:SendCommand("admin.say", {"ERROR: You are no admin.", "player", p_Player.name})
+	if p_Target == 'squadLeader' then
+		if p_Player.isSquadLeader == false then
+			RCON:SendCommand("admin.say", {"ERROR: You are no squad leader.", "player", p_Player.name})
+			return
+		end
+
+		local s_Players = PlayerManager:GetPlayersByTeam(p_Player.teamId)
+
+		for _, l_Player in pairs(s_Players) do
+			if l_Player.isSquadLeader then
+				NetEvents:SendTo('ServerClient_Chat', l_Player, p_Player.name, p_Target, p_Message, p_TargetName)
+			end
+		end
+
 		return
 	end
-	
-	local s_Message = p_Content[1]
-	local s_IsAnonymMessage = p_Content[2]
-	
-	if s_IsAnonymMessage == false then
-		NetEvents:Broadcast('ToClient:AdminMessage', {s_Message, p_Player.name})
-		RCON:TriggerEvent("player.onChat",{p_Player.name, s_Message, "all"})
-	else
-		NetEvents:Broadcast('ToClient:AdminMessage', {s_Message})
-		RCON:TriggerEvent("player.onChat",{p_Player.name, "Anonym: " .. s_Message, "all"})
+
+	if p_TargetName ~= nil and (p_Target == 'adminPlayer' or p_Target == 'player') then
+		local s_TargetPlayer = PlayerManager:GetPlayerByName(p_TargetName)
+
+		if s_TargetPlayer ~= nil then
+			NetEvents:SendTo('ServerClient_Chat', s_TargetPlayer, p_Player.name, p_Target, p_Message, p_TargetName)
+			NetEvents:SendTo('ServerClient_Chat', p_Player, p_Player.name, p_Target, p_Message, p_TargetName)
+			-- commented out for privacy
+			-- RCON:TriggerEvent("player.onChat", {p_Player.name, p_Message, "player", p_TargetName})
+		else
+			RCON:SendCommand("admin.say", {"ERROR: Player not found.", p_Player.name})
+		end
+
+		return
 	end
 end
 
 -- Region gameAdmin
 
-function BetterIngameChat:OnGameAdminPlayer(p_PlayerName, p_Abilitities)
-
+function ServerBetterIngameChat:OnGameAdminPlayer(p_PlayerName, p_Abilitities)
     self.m_AdminList[p_PlayerName] = p_Abilitities
-	
+
 	-- send to the player
 	local s_Player = PlayerManager:GetPlayerByName(p_PlayerName)
 	if s_Player ~= nil then
@@ -132,26 +93,23 @@ function BetterIngameChat:OnGameAdminPlayer(p_PlayerName, p_Abilitities)
 	end
 end
 
-function BetterIngameChat:OnGameAdminClear()
-
+function ServerBetterIngameChat:OnGameAdminClear()
 	-- send to all admins
-	for l_AdminName,l_Abilitities in pairs(self.m_AdminList) do
+	for l_AdminName, l_Abilitities in pairs(self.m_AdminList) do
 		local s_Admin = PlayerManager:GetPlayerByName(l_AdminName)
 		if s_Admin ~= nil then
 			NetEvents:SendTo('RemoveAdminPlayer', s_Admin)
 		end
 	end
-	
+
 	self.m_AdminList = {}
 end
 
-function BetterIngameChat:OnPlayerAuthenticated(p_Player)
-	
+function ServerBetterIngameChat:OnPlayerAuthenticated(p_Player)
 	-- send NetEvent if admin
 	if self.m_AdminList[p_Player.name] ~= nil then
 		NetEvents:SendTo('AddAdminPlayer', p_Player)
 	end
 end
--- Endregion
 
-g_BetterIngameChat = BetterIngameChat()
+ServerBetterIngameChat()

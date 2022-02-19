@@ -1,29 +1,67 @@
-local EnableTyping = require 'enableTyping'
-local IncomingMessages = require 'incomingMessages'
-local OutgoingMessages = require 'outgoingMessages'
-local CollectedPlayers = require 'collectedNames'
+---@class ClientBetterIngameChat
+ClientBetterIngameChat = class 'ClientBetterIngameChat'
 
-class 'BetterIngameChat'
+---@type EnableTyping
+local m_EnableTyping = require 'EnableTyping'
+---@type IncomingMessages
+local m_IncomingMessages = require 'IncomingMessages'
+---@type OutgoingMessages
+local m_OutgoingMessages = require 'OutgoingMessages'
+---@type CollectedPlayers
+local m_CollectedPlayers = require 'CollectedPlayers'
 
-function BetterIngameChat:__init()
-	-- Subscribe to events.
-	self.m_ExtensionLoadedEvent = Events:Subscribe('Extension:Loaded', self, self.OnExtensionLoaded)
-	self.m_LevelDestroyEvent = Events:Subscribe('Level:Destroy', self, self.OnLevelDestroy)
+function ClientBetterIngameChat:__init()
+	-- Subscribe events
+	Events:Subscribe('Extension:Loaded', self, self.OnExtensionLoaded)
+	Events:Subscribe('Engine:Update', self, self.OnEngineUpdate)
+	Events:Subscribe('Level:Destroy', self, self.OnLevelDestroy)
+	Events:Subscribe('Player:Connected', self, self.OnPlayerConnected)
+	Events:Subscribe('Player:Deleted', self, self.OnPlayerDeleted)
 
-	-- Initialize the other components.
-	self.m_EnableTyping = EnableTyping()
-	self.m_IncomingMessages = IncomingMessages()
-	self.m_OutgoingMessages = OutgoingMessages()
-	self.m_CollectedPlayers = CollectedPlayers()
-	
+	-- Install hooks
+	Hooks:Install('UI:InputConceptEvent', 999, self, self.OnUIInputConceptEvent)
+	Hooks:Install('UI:CreateChatMessage', 999, self, self.OnUICreateChatMessage)
 end
 
-function BetterIngameChat:OnExtensionLoaded()
+function ClientBetterIngameChat:OnExtensionLoaded()
 	WebUI:Init()
 end
 
-function BetterIngameChat:OnLevelDestroy()
+---@param p_DeltaTime number
+---@param p_SimulationDeltaTime number
+function ClientBetterIngameChat:OnEngineUpdate(p_DeltaTime, p_SimulationDeltaTime)
+	m_OutgoingMessages:OnEngineUpdate(p_DeltaTime, p_SimulationDeltaTime)
+end
+
+function ClientBetterIngameChat:OnLevelDestroy()
 	WebUI:ExecuteJS("OnClearChat()")
 end
 
-g_BetterIngameChat = BetterIngameChat()
+---@param p_Player Player
+function ClientBetterIngameChat:OnPlayerConnected(p_Player)
+	m_CollectedPlayers:OnPlayerConnected(p_Player)
+end
+
+---@param p_Player Player
+function ClientBetterIngameChat:OnPlayerDeleted(p_Player)
+	m_CollectedPlayers:OnPlayerDeleted(p_Player)
+end
+
+---@param p_HookCtx HookContext
+---@param p_EventType UIInputActionEventType|integer
+---@param p_Action UIInputAction|integer
+function ClientBetterIngameChat:OnUIInputConceptEvent(p_HookCtx, p_EventType, p_Action)
+	m_EnableTyping:OnUIInputConceptEvent(p_HookCtx, p_EventType, p_Action)
+end
+
+---@param p_HookCtx HookContext
+---@param p_Message string
+---@param p_ChannelId ChatChannelType|integer
+---@param p_PlayerId integer
+---@param p_RecipientMask integer
+---@param p_IsSenderDead boolean
+function ClientBetterIngameChat:OnUICreateChatMessage(p_HookCtx, p_Message, p_ChannelId, p_PlayerId, p_RecipientMask, p_IsSenderDead)
+	m_IncomingMessages:OnUICreateChatMessage(p_HookCtx, p_Message, p_ChannelId, p_PlayerId, p_RecipientMask, p_IsSenderDead)
+end
+
+ClientBetterIngameChat()

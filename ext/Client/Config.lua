@@ -1,5 +1,4 @@
-ChatConfig = 
-{
+return {
 	sayAllChat = true,
 	teamChat = true,
 	squadChat = true,
