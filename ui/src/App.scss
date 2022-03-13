@@ -64,14 +64,15 @@
 }
 
 :root {
-    --team: rgb(79, 197, 222);
     --all: #ffffff;
-    --enemy: rgb(245, 119, 49);
-    --squad: rgb(157, 251, 0);
-    --admin: #ff73fa;
-    --leader: #44ddbf;
-    --spectator: #9b84ee;
-    --player: #faa61a;
+    --all-rgb: 255, 255, 255;
+    --team-rgb: 206, 246, 251;
+    --enemy-rgb: 255, 194, 169;
+    --squad-rgb: 157, 251, 0;
+    --admin-rgb: 255, 115, 250;
+    --leader-rgb: 68, 221, 191;
+    --spectator-rgb: 155, 132, 238;
+    --player-rgb: 250, 166, 26;
     --team-gradient: linear-gradient(90deg, rgba(33,158,188,0.2) 0%, rgba(0,0,0,0) 100%);
     --all-gradient: linear-gradient(90deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%);
     --enemy-gradient: linear-gradient(90deg, rgba(245,119,49,0.2) 0%, rgba(0,0,0,0) 100%);
@@ -80,6 +81,9 @@
     --leader-gradient: linear-gradient(90deg, rgba(68,221,191,0.2) 0%, rgba(0,0,0,0) 100%);
     --spectator-gradient: linear-gradient(90deg, rgba(155,132,238,0.2) 0%, rgba(0,0,0,0) 100%);
     --player-gradient: linear-gradient(90deg, rgba(250,166,26,0.2) 0%, rgba(0,0,0,0) 100%);
+
+    --bf-grad-one: rgba(19, 82, 133, 0.29);
+    --bf-grad-two: rgba(22, 127, 212, 0.27);
 }
 
 ::-webkit-scrollbar {
@@ -160,8 +164,24 @@ h6 {
             left: 0;
             width: 25vw;
             height: 22.85vh;
-            background: rgba(0, 173, 255, 0.2);
+            background: var( --bf-grad-one);
+            background: linear-gradient(
+                90deg,
+                var( --bf-grad-one) 0%,
+                var(--bf-grad-two) 25%,
+                var( --bf-grad-one) 44%,
+                var( --bf-grad-two) 50%,
+                var( --bf-grad-one) 65%,
+                var( --bf-grad-two) 75%,
+                var( --bf-grad-two) 85%,
+                var( --bf-grad-one) 90%,
+                var( --bf-grad-two) 100%
+            );
             filter: blur(7px);
+            box-shadow: 0 0 2vh var( --bf-grad-two), inset 0 -5vh 5vh var(--bf-grad-two);
+            /*background: transparent url("./assets/img/bg.png") 50% 50% no-repeat;
+            background-size: cover;*/
+            opacity: .9;
         }
 
         .chatWindowInner {
@@ -202,7 +222,7 @@ h6 {
         font-weight: 400;
         max-width: 24vw;
         width: 100%;
-        padding: 0.5vh 0.5vw;
+        padding: 0.25vh 0.5vw;
         position: relative;
         //border-left: 0.2vw solid var(--all);
         word-break: break-word;
@@ -233,190 +253,95 @@ h6 {
         }
         
         &.chatTypeEnemy {
-            border-color: var(--enemy);
-
-            &::before {
-                content: '';
-                position: absolute;
-                background: var(--enemy-gradient);
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                z-index: -1;
-            }
-
             .chatSender,
             .chatMessageTarget {
-                color: var(--enemy);
-                text-shadow: 0 0 .2vh rgba(245, 119, 49,1);
+                //color: rgba(var(--enemy-rgb), 1);
+                //text-shadow: -1px -1px 4px rgba(var(--enemy-rgb), 1), 1px 1px 4px rgba(var(--enemy-rgb), 1);
+                color: #fff !important;
+                text-shadow: none;
+                filter: drop-shadow(0 0 .1vh #ff7300) saturate(4) contrast(1.1);           
             }
         }
 
         &.chatTypeAll {
-            border-color: var(--all);
-            
-            &::before {
-                content: '';
-                position: absolute;
-                background: var(--all-gradient);
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                z-index: -1;
-
-                display: none;
-            }
-
             .chatSender {
-                color: transparent;
-                text-shadow: 0 0 2px rgba(79, 197, 222,1);
-                font-weight: 600;
-
-                -webkit-background-clip: text;
-                -moz-background-clip: text;
-                background-clip: text;
-                background-color: #fff;
-
+                color: rgba(var(--all-rgb), 1);
+                text-shadow: -1px -1px 4px rgba(var(--all-rgb), 1), 1px 1px 4px rgba(var(--all-rgb), 1);
             }
         }
 
         &.chatTypeTeam {
-            border-color: var(--team);
-            
-            &::before {
-                content: '';
-                position: absolute;
-                background: var(--team-gradient);
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                z-index: -1;
-            }
-
             .chatSender {
-                color: var(--team);
+                color: rgba(var(--team-rgb), 1);
+                text-shadow: -1px -1px 4px rgba(var(--team-rgb), 1), 1px 1px 4px rgba(var(--team-rgb), 1);
             }
         }
 
         &.chatTypeSquad {
-            border-color: var(--squad);
-
-            &::before {
-                content: '';
-                position: absolute;
-                background: var(--squad-gradient);
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                z-index: -1;
-            }
-
             .chatSender {
-                color: var(--squad);
+                color: rgba(var(--squad-rgb), 1);
+                text-shadow: -1px -1px 4px rgba(var(--squad-rgb), 1), 1px 1px 4px rgba(var(--squad-rgb), 1);
             }
         }
 
         &.chatTypeAdmin {
-            border-color: var(--admin);
+            color: rgba(var(--admin-rgb), 1) !important;
+            text-shadow: -1px -1px 4px rgba(var(--admin-rgb), 1), 1px 1px 4px rgba(var(--admin-rgb), 1);
 
-            &::before {
-                content: '';
-                position: absolute;
-                background: var(--admin-gradient);
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                z-index: -1;
-            }
-
+            .chatMessageTarget,
             .chatSender {
-                color: var(--admin) !important;
+                color: rgba(var(--admin-rgb), 1) !important;
+                text-shadow: -1px -1px 4px rgba(var(--admin-rgb), 1), 1px 1px 4px rgba(var(--admin-rgb), 1);
             }
         }
 
         &.chatTypeLeaders {
-            border-color: var(--leader);
-
-            &::before {
-                content: '';
-                position: absolute;
-                background: var(--leader-gradient);
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                z-index: -1;
-            }
-
             .chatSender {
-                color: var(--leader);
+                color: rgba(var(--leader-rgb), 1);
+                text-shadow: -1px -1px 4px rgba(var(--leader-rgb), 1), 1px 1px 4px rgba(var(--leader-rgb), 1);
             }
         }
 
         &.chatTypeSpectator {
-            border-color: var(--team);
-
-            &::before {
-                content: '';
-                position: absolute;
-                background: var(--team-gradient);
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                z-index: -1;
-            }
-
             .chatSender {
-                color: var(--team);
+                color: rgba(var(--team-rgb), 1);
+                text-shadow: -1px -1px 4px rgba(var(--spectator-rgb), 1), 1px 1px 4px rgba(var(--spectator-rgb), 1);
             }
         }
 
         &.chatTypePlayer {
-            border-color: var(--spectator);
-
-            &::before {
-                content: '';
-                position: absolute;
-                background: var(--spectator-gradient);
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                z-index: -1;
-            }
-
             .chatSender {
-                color: var(--spectator) !important;
+                color: rgba(var(--spectator-rgb), 1) !important;
+                text-shadow: -1px -1px 4px rgba(var(--spectator-rgb), 1), 1px 1px 4px rgba(var(--spectator-rgb), 1);
             }
         }
 
         &.chatTeammate {
             .chatSender {
-                color: var(--team);
+                color: rgba(var(--team-rgb), 1);
+                text-shadow: -1px -1px 4px rgba(var(--team-rgb), 1), 1px 1px 4px rgba(var(--team-rgb), 1);
             }
         }
 
         &.chatSquadmate {
             .chatSender {
-                color: var(--squad);
+                color: rgba(var(--squad-rgb), 1);
+                text-shadow: -1px -1px 4px rgba(var(--squad-rgb), 1), 1px 1px 4px rgba(var(--squad-rgb), 1);
             }
         }
 
         &.chatSpectator {
             .chatSender {
-                color: var(--team);
+                color: rgba(var(--team-rgb), 1);
+                text-shadow: -1px -1px 4px rgba(var(--team-rgb), 1), 1px 1px 4px rgba(var(--team-rgb), 1);
             }
         }
 
         &.chatLocalPlayer {
             .chatSender {
-                color: var(--all) !important;
+                color: #fff !important;
+                text-shadow: none;
+                filter: drop-shadow(0 0 .1vh #0084ff) saturate(3) contrast(1.2);            
             }
         }
     }
@@ -429,8 +354,9 @@ h6 {
     top: 35.5vh;
     width: 25.2vw;
     height: 3vh;
-    font-size: 1vw;
+    font-size: 1.5vh;
     text-transform: uppercase;
+    text-shadow: -1px -1px 4px rgba(255, 255, 255, .5), 1px 1px 4px rgba(255, 255, 255, .5);
 }
 
 /*@media only screen and (min-width: 719px) {
