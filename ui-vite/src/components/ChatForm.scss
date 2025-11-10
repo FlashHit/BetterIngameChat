@@ -1,0 +1,115 @@
+#chatForm {
+    position: absolute;
+    top: 340rem;
+    left: 60rem;
+    width: 440rem;
+    height: 50rem;
+    background: url('../assets/img/bgcontainer.png');
+    background-size: 100% 100%;
+    align-items: center;
+    justify-content: flex-start;
+    display: flex;
+    padding: 0 20rem;
+
+    input {
+        box-sizing: border-box;
+        height: auto;
+        border: none;
+        color: rgb(235, 241, 246);
+        background: transparent;
+        font-weight: 400;
+        font-family: 'bffont';
+        padding: 0 10rem;
+        font-size: 16rem;
+        flex: 1 1 auto;
+
+        &:focus,
+        &:active {
+            border: none;
+        }
+    }
+
+    label {
+        font-size: 16rem;
+        text-transform: uppercase;
+        color: rgb(235, 241, 246);
+    }
+
+    * {
+        text-shadow: 0 0 2rem var(--shadow-color), 0 0 5rem var(--shadow-color), 0 0 10rem var(--shadow-color);
+    }
+
+    &.All {
+        label,
+        input {
+            color: rgb(235, 241, 246);
+        }
+    }
+
+    &.Admin {
+        label,
+        input {
+            color: #ffd0f5;
+            --shadow-color: rgb(255, 77, 246);
+        }
+    }
+
+    &.Team {
+        label,
+        input {
+            --shadow-color: rgb(30 173 255);
+            color: rgb(144, 242, 255);
+        }
+    }
+
+    &.Squad {
+        label,
+        input {
+            --shadow-color: rgb(170, 255, 59);
+            color: rgba(183, 255, 158, 1);
+        }
+    }
+
+    &.Leaders {
+        label,
+        input {
+            color: rgb(255, 251, 218);
+            --shadow-color: rgb(241, 255, 114);
+        }
+    }
+
+    &.Player {
+        label,
+        input {
+            color: #f4e3ff;
+            --shadow-color: #a96cd1;
+        }
+    }
+
+    /*
+    ul.typeahead-selector {
+        position: absolute;
+        margin: 0;
+        top: 4.2vh;
+        left: 0;
+        width: 100%;
+        padding: 0;
+
+        li {
+            list-style: none;
+            height: 3vh;
+            background: white;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            font-size: 1vw;
+
+            &.hover {
+                background: var(--team);
+                color: #fff;
+            }
+        }
+    }
+    */
+}

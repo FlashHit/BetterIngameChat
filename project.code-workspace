@@ -9,8 +9,8 @@
 			"path": "ext\\Client"
 		},
 		{
-			"name": "Web UI",
-			"path": "WebUI"
+			"name": "UI",
+			"path": "ui-vite"
 		}
 	],
 	"settings": {

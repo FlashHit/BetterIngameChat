@@ -25,6 +25,7 @@ function EnableTyping:OnUIInputConceptEvent(p_HookCtx, p_EventType, p_Action)
 	end
 
 	-- To Player chat
+	--[[ TODO: Re-enable Player chat when UI is ready
 	if (p_Action == UIInputAction.UIInputAction_TeamChat or p_Action == UIInputAction.UIInputAction_SquadChat)
 	and m_Config.playerChat
 	and InputManager:IsKeyDown(InputDeviceKeys.IDK_LeftShift) then
@@ -32,6 +33,7 @@ function EnableTyping:OnUIInputConceptEvent(p_HookCtx, p_EventType, p_Action)
 		p_HookCtx:Pass(UIInputAction.UIInputAction_None, p_EventType)
 		return
 	end
+	]]
 
 	-- SquadLeader chat
 	if p_Action == UIInputAction.UIInputAction_SayAllChat
