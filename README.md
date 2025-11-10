@@ -2,7 +2,8 @@
 
 Based on the [Advanced-Chat](https://github.com/EmulatorNexus/Advanced-Chat/) mod BetterIngameChat is a replacement for the default chat window.
 
-### Features
+## Features
+
 - Responsive layout
 - Color represented channels (heavily inspired by the Reality Mod's chat UI design)
   - All = Orange (enemy), Blue (teammate), Lime (squadmate)
@@ -11,7 +12,6 @@ Based on the [Advanced-Chat](https://github.com/EmulatorNexus/Advanced-Chat/) mo
   - SquadLeader = Teal
   - DirectMessage = Purple
   - Admin = Pink
-  
 - Direct Messages
   - Press **Shift + Chatkey**, search for the player's name, Tab or select his name from the dropdown, type in the message and send.
 - Name highlighter
@@ -20,18 +20,23 @@ Based on the [Advanced-Chat](https://github.com/EmulatorNexus/Advanced-Chat/) mo
 - End of round chat support
 - Squad Leader channel support - **Shift + AllChatkey**
 - Admin support (requires gameAdmin to track if they are admin)
-  - **Ctrl + AllChatkey**  - Admin message to all channel
-  - **Ctrl + TeamChatkey**  - Anonymus admin message to all channel
-  - **Ctrl + SquadChatkey**  - Admin direct mesage to a player
-- **(SOON™)** Emoji support like: `:pog:`
+  - **Ctrl + AllChatkey** - Admin message to all channel
+  - **Ctrl + TeamChatkey** - Anonymus admin message to all channel
+  - **Ctrl + SquadChatkey** - Admin direct mesage to a player
 
-### Devs
-- [Flash_Hit](https://github.com/FlashHit)
-- [KVN](https://github.com/kaloczikvn)
+## Screenshots
+
+![](/github/01.png)
+
+## Developers
+
+- [KVN](https://github.com/KVN) [@lol24](https://community.veniceunleashed.net/u/lol24/)
+- [Flash_Hit](https://github.com/Flash_Hit) [@BreeArnold](https://community.veniceunleashed.net/u/lol24/)
 
 Big thanks to the original crators of the Advanced-Chat mod:
+
 - [FoolHen](https://github.com/FoolHen)
 - [OrfeasZ](https://github.com/OrfeasZ)
 - [Powback](https://github.com/Powback)
 
-*We wanted to create a Pull Request first but Vue is really not my cup of tea and I don't want to overwrite the whole ui of your project just beacuse I work in React, but we can still contribute to that project if you'd like it!*
+_We wanted to create a Pull Request first but Vue is really not my cup of tea and I don't want to overwrite the whole ui of your project just beacuse I work in React, but we can still contribute to that project if you'd like it!_
